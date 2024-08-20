@@ -1,22 +1,22 @@
 package pojo;
 
 //import java.time.LocalDateTime;
-import java.time.LocalDate;
+import java.sql.Date;
 
 
 public class CaretakerPreferences {
 	private String category; // e.g., Nurse, Caregiver, Dual-Role Nurse-Caretaker
     private String genderPreference; // e.g., Male, Female, Any
     private double maxWeeklyRate; // Maximum weekly rate the user is willing to pay
-    private LocalDate requiredFrom;
-    private LocalDate requiredTo;
+    private Date requiredFrom;
+    private Date requiredTo;
     private String serviceLocation; // Location where the service is needed
     private boolean liveIn;
     private String forWhom; // e.g., Self, Mother, Father, Grandfather, Grandmother, wife, husband, sister, bother, friend.
 
     
     public CaretakerPreferences(String category, String genderPreference, double maxHourlyRate, 
-            LocalDate requiredFrom, LocalDate requiredTo, String serviceLocation, 
+    		Date requiredFrom, Date requiredTo, String serviceLocation, 
             boolean liveIn, String forWhom) {
 		this.category = category;
 		this.genderPreference = genderPreference;
@@ -59,22 +59,22 @@ public class CaretakerPreferences {
 	}
 
 
-	public LocalDate getRequiredFrom() {
+	public Date getRequiredFrom() {
 		return requiredFrom;
 	}
 
 
-	public void setRequiredFrom(LocalDate requiredFrom) {
+	public void setRequiredFrom(Date requiredFrom) {
 		this.requiredFrom = requiredFrom;
 	}
 
 
-	public LocalDate getRequiredTo() {
+	public Date getRequiredTo() {
 		return requiredTo;
 	}
 
 
-	public void setRequiredTo(LocalDate requiredTo) {
+	public void setRequiredTo(Date requiredTo) {
 		this.requiredTo = requiredTo;
 	}
 

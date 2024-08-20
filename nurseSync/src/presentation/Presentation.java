@@ -1,5 +1,6 @@
 package presentation;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,7 @@ public class Presentation {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     
- // Constructor to initialize services and scanner
+    // Constructor to initialize services and scanner
     public Presentation(UserService userService, CaretakerService caretakerService, AdminService adminService) {
         this.userService = userService;
         this.caretakerService = caretakerService;
@@ -38,7 +39,7 @@ public class Presentation {
         this.scanner = new Scanner(System.in);
     }
     
- // method to start the presentation layer
+    // method to start the presentation layer
     public void start() {
         while (true) {
             displayMainMenu();
@@ -47,20 +48,21 @@ public class Presentation {
 
             switch (choice) {
                 case 1:
-                    handleUserOperations();
+                	userMenu();
                     break;
+                    
                 case 2:
-                    handleCaretakerOperations();
+                    caretakerMenu();
                     break;
+                    
                 case 3:
-                    handleAdminOperations();
+                    adminMenu();
                     break;
-//                case 4:
-//                	handleLogin();
-//                    break;
+                    
                 case 4:
                     System.out.println("Exiting the application...");
                     return;
+                    
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -72,20 +74,16 @@ public class Presentation {
         System.out.println("1. User");
         System.out.println("2. Caretaker");
         System.out.println("3. Admin");
-        System.out.println("5. Exit");
+        System.out.println("4. Exit");
         System.out.print("Enter your choice: ");
     }
     
-    private void handleUserOperations() {
+    private void userMenu() {
         System.out.println("\nUser Menu:");
         System.out.println("1. Sign In/Sign Up?");
         System.out.println("2. View all Nurse/Caretaker");
-//        System.out.println("3. Update User Account");
-//        System.out.println("4. Update User Field");
-//        System.out.println("5. Delete User Account");
-//        System.out.println("6. View User Account");
-//        System.out.println("7. List All Users"); 
-//        System.out.println("8. Back to Main Menu");
+        System.out.println("3. Exit");
+        
         System.out.print("Enter your choice: ");
 
         int choice = scanner.nextInt();
@@ -95,29 +93,14 @@ public class Presentation {
             case 1:
             	userSigninSignupMenu();
                 break;
+                
             case 2: 
                 displayAllCaretakers();
                 break;
-//            case 2:
-//                userLogin();
-//                break;  
-//            case 3:
-//            	updateUserAccount();
-//                break;   
-//            case 4:
-//                deleteUserAccount();
-//                break;
-//            case 5:
-//            	updateUserField();
-//                break;
-//            case 6:
-//                viewUserAccount();
-//                break;
-//            case 7:
-//                displayAllUsers(); 
-//                break;
-//            case 8:
-//                return;
+                
+            case 3:
+                return;
+                
             default:
                 System.out.println("Invalid choice. Please try again.");
                 break;
@@ -145,6 +128,48 @@ public class Presentation {
                 break;
         }
     }
+    
+    private void userLogin() {
+        System.out.print("Enter User Username: ");
+        String username = scanner.nextLine();
+        
+        System.out.print("Enter User Password: ");
+        String password = scanner.nextLine();
+
+        UserPojo user = userService.getUserByUsername(username);
+        
+        if (user != null && user.getPassword().equals(password)) {
+            System.out.println("Login successful!");
+            handleUserOperations();
+        } else {
+            System.out.println("Invalid credentials.");
+        }
+    }
+    
+    private void userOperationsAfterLogin() {
+    	System.out.println("Welcome to Nurse Sync!");
+        System.out.println("1. Search with Preference?");
+        System.out.println("2. List all the Nurse/Caregiver");
+        System.out.print("Enter your choice: ");
+        
+        int choice = scanner.nextInt();
+        scanner.nextLine(); 
+
+        switch (choice) {
+            case 1:
+            	provideCaretakerPreferences();
+                break;
+                
+            case 2: 
+            	displayAllCaretakers();
+            	break;
+            	
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
+        }
+    }
+    
     private void createUserAccount() {
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
@@ -164,149 +189,48 @@ public class Presentation {
         System.out.print("Enter your phone number: ");
         String phoneNumber = scanner.nextLine();
         
-        // Get caretaker preferences from the user
-        System.out.print("Enter caretaker category (e.g., Nurse, Caretaker, NurseCumCaretaker): ");
-        String category = scanner.nextLine();
-        
-        System.out.print("Enter gender preference (e.g., Male, Female, Any): ");
-        String genderPreference = scanner.nextLine();
-        
-        System.out.print("Enter maximum weekly rate: ");
-        double maxWeeklyRate = scanner.nextDouble();
-        scanner.nextLine(); // Consume newline
-        
-        System.out.print("Enter required from date and time (yyyy-MM-ddTHH:mm): ");
-        LocalDateTime requiredFrom = LocalDateTime.parse(scanner.nextLine());
-        
-        System.out.print("Enter required to date and time (yyyy-MM-ddTHH:mm): ");
-        LocalDateTime requiredTo = LocalDateTime.parse(scanner.nextLine());
-        
-        System.out.print("Enter service location: ");
-        String serviceLocation = scanner.nextLine();
-        
-        System.out.print("Is live-in required? (true/false): ");
-        boolean liveIn = scanner.nextBoolean();
-        scanner.nextLine(); // Consume newline
-        
-        System.out.print("Enter for whom the service is needed (e.g., Self, Mother, Father, Friend): ");
-        String forWhom = scanner.nextLine();
-        
-        // caretaker preferences 
-        CaretakerPreferences caretakerPreferences = new CaretakerPreferences(category, genderPreference, maxWeeklyRate, 
-                requiredFrom, requiredTo, serviceLocation, liveIn, forWhom);
-        
         // Create UserPojo with a single CaretakerPreferences object
         UserPojo user = new UserPojo(0, name, username, password, email, address, phoneNumber);
         boolean success = userService.createUser(user);
         
         if (success) {
             System.out.println("User account created successfully!");
+            handleUserOperations();
         } else {
             System.out.println("User account creation failed!");
         }
     }
     
-    private void userLogin() {
-        System.out.print("Enter User Username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter User Password: ");
-        String password = scanner.nextLine();
-
-        UserPojo user = userService.getUserByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            System.out.println("Login successful!");
-            handleUserOperations();
-        } else {
-            System.out.println("Invalid credentials.");
-        }
-    }
+   
     
     private void provideCaretakerPreferences(CaretakerPreferences preferences) {
-        System.out.print("Enter Category (e.g., 1. Nurse, 2. Caregiver, 3. Dual-Role Nurse-Caregiver): ");
-        System.out.print("Enter your choice: ");
-        String category;
-
-        int choice = scanner.nextInt();
-        scanner.nextLine(); 
-
-        switch (choice) {
-            case 1:
-            	category = "Nurse";
-                break;
-                
-            case 2: 
-            	category = "Caregiver";
-                break;
-                
-            case 3: 
-            	category = "Dual-Role Nurse-Caregiver";
-                break;
-                
-            default:
-                System.out.println("Invalid choice. Please try again.");
-                break;
-        }
+    	
+    	// Get the category using the InputValidator
+        String category = InputValidator.validateCategory(scanner);
+        preferences.setCategory(category);
         
-        System.out.print("Enter new Gender Preference (1. Male, 2. Female, 3. Any): ");
-        System.out.print("Enter your choice: ");
-        String genderPreference;
-
-        choice = scanner.nextInt();
-        scanner.nextLine(); 
-
-        switch (choice) {
-            case 1:
-            	genderPreference = "Male";
-                break;
-                
-            case 2: 
-            	genderPreference = "female";
-                break;
-                
-            case 3: 
-            	genderPreference = "Any";
-                break;
-                
-            default:
-                System.out.println("Invalid choice. Please try again.");
-                break;
-        }
+        // Get the gender preference using the InputValidator
+        String genderPreference = InputValidator.validateGenderPreference(scanner);
+        preferences.setGenderPreference(genderPreference);
         
-        double maxWeeklyRate;
+
+        // Get the max weekly rate using the InputValidator
+        double maxWeeklyRate = InputValidator.validateMaxWeeklyRate(scanner);
+        preferences.setMaxWeeklyRate(maxWeeklyRate);
+
+        
         boolean validInput = false;
-
-        System.out.print("Enter new Max Weekly Rate: ");
-
-        while (!validInput) {
-            try {
-                // Validate and get Max Weekly Rate
-                maxWeeklyRate = InputValidator.validateMaxWeeklyRate(scanner);
-                preferences.setMaxWeeklyRate(maxWeeklyRate);
-
-                validInput = true; 
-            } catch (InvalidInputException e) {
-//                System.out.println(e.getMessage());
-                System.out.println("Invalid, Please try again.");
-            }
-        }
-        
-        validInput = false;
-        
-//        final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         
         while (!validInput) {
             try {
                 // Get and validate Required From date
-                LocalDate requiredFrom = promptAndValidateDate("Enter new Required From (yyyy-MM-dd): ");
+                Date requiredFrom = InputValidator.promptAndValidateDate(scanner, "Enter new Required From (yyyy-MM-dd): ");
                 
                 // Get and validate Required To date
-                LocalDate requiredTo = promptAndValidateDate("Enter new Required To (yyyy-MM-dd): ");
+                Date requiredTo = InputValidator.promptAndValidateDate(scanner, "Enter new Required To (yyyy-MM-dd): ");
                 
-                // Check if Required From is before Required To
-                if (requiredFrom.isAfter(requiredTo)) {
-                    throw new IllegalArgumentException("The 'Required From' date cannot be after the 'Required To' date.");
-                }
+                // Validate date order
+                InputValidator.validateDateOrder(requiredFrom, requiredTo);
 
                 // Set the preferences
                 preferences.setRequiredFrom(requiredFrom);
@@ -319,44 +243,17 @@ public class Presentation {
                 System.out.println("Please try again.");
             }
         }
-    
-
-	    private LocalDate promptAndValidateDate(String prompt) {
-	        while (true) {
-	            System.out.print(prompt);
-	            String input = scanner.nextLine();
-	
-	            try {
-	                // Try to parse the input as a LocalDate
-	                LocalDate date = LocalDate.parse(input, DATE_FORMATTER);
-	                return date;
-	            } catch (DateTimeParseException e) {
-	                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
-	            }
-	        }
-	    
-   
-        String from = scanner.nextLine();
-        System.out.print("Enter new Required To (yyyy-MM-ddTHH:mm): ");
-        String to = scanner.nextLine();
-        LocalDateTime requiredFrom = LocalDateTime.parse(from);
-        LocalDateTime requiredTo = LocalDateTime.parse(to);
-        System.out.print("Enter new Service Location: ");
-        String serviceLocation = scanner.nextLine();
-        System.out.print("Is Live-In Required? (true/false): ");
-        boolean liveIn = scanner.nextBoolean();
-        scanner.nextLine(); // Consume newline
-        System.out.print("For Whom is the Service? (e.g., Mother, Self): ");
-        String forWhom = scanner.nextLine();
-
-        // Update the caretaker preferences
-        preferences.setCategory(category);
-        preferences.setGenderPreference(genderPreference);
-        preferences.setMaxWeeklyRate(maxWeeklyRate);
-//        preferences.setRequiredFrom(requiredFrom);
-//        preferences.setRequiredTo(requiredTo);
+        
+        // Validate and get the service location
+        String serviceLocation = InputValidator.validateServiceLocation(scanner);
         preferences.setServiceLocation(serviceLocation);
+        
+        // Validate and get the live-in requirement
+        boolean liveIn = InputValidator.validateLiveIn(scanner);
         preferences.setLiveIn(liveIn);
+        
+        // Get the value for "For Whom is the Service?" using the InputValidator
+        String forWhom = InputValidator.validateForWhom(scanner);
         preferences.setForWhom(forWhom);
     }
     
