@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import pojo.CaretakerPojo;
+import pojo.CaretakerPreferences;
 
 public class CaretakerDaoCollectionImpl implements CaretakerDao{
 
@@ -70,6 +72,19 @@ public class CaretakerDaoCollectionImpl implements CaretakerDao{
             return true; // Status updated successfully
         }
         return false; // Caretaker not found
+	}
+
+	@Override
+	public List<CaretakerPojo> findCaretakersByPreferences(CaretakerPreferences preferences) {
+		return caretakerData.values().stream()
+		        .filter(caretaker -> 
+		            (preferences.getCategory() == null || caretaker.getCategory().equals(preferences.getCategory())) &&
+		            (preferences.getGenderPreference() == null || caretaker.getGender().equals(preferences.getGenderPreference())) &&
+		            (preferences.getMaxWeeklyRate() == 0 || caretaker.getWeeklyRate() <= preferences.getMaxWeeklyRate()) &&
+		            (preferences.getServiceLocation() == null || caretaker.getLocation().equals(preferences.getServiceLocation())) &&
+		            (preferences.isLiveIn() == caretaker.getIsLiveIn())
+		        )
+		        .collect(Collectors.toList());
 	}
 
 }

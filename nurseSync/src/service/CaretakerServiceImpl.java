@@ -3,12 +3,21 @@ package service;
 import java.util.List;
 
 import dao.CaretakerDao;
+//import dao.CaretakerDaoCollectionImpl;
 import pojo.CaretakerPojo;
+import pojo.RequestPojo;
+import dao.RequestDao;
 
 public class CaretakerServiceImpl implements CaretakerService{
 
 	private CaretakerDao caretakerDao;
+    private RequestDao requestDao;
 
+//    public CaretakerServiceImpl(CaretakerDao caretakerDao, RequestDao requestDao) {
+//        this.caretakerDao = caretakerDao;
+//        this.requestDao = requestDao;
+//    }
+    
     public CaretakerServiceImpl(CaretakerDao caretakerDao) {
         this.caretakerDao = caretakerDao;
     }
@@ -46,6 +55,23 @@ public class CaretakerServiceImpl implements CaretakerService{
 	@Override
 	public boolean updateCaretakerStatus(int caretakerId, String status) {
         return caretakerDao.updateCaretakerStatus(caretakerId, status);
+	}
+
+	@Override
+	public boolean handleRequest(int requestId, boolean accept) {
+		RequestPojo request = requestDao.getRequestById(requestId);
+       
+		if (request != null) {
+            if (accept) {
+                caretakerDao.updateCaretakerStatus(request.getCaretakerId(), "Booked");
+                request.setStatus("Accepted");
+            } else {
+                request.setStatus("Rejected");
+            }
+            requestDao.updateRequest(request);
+            return true;
+        }
+        return false;
 	}
 
 }

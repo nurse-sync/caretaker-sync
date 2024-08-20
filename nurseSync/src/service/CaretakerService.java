@@ -12,4 +12,5 @@ public interface CaretakerService {
     boolean updateCaretaker(CaretakerPojo caretaker);
     boolean deleteCaretaker(int caretaker);
     boolean updateCaretakerStatus(int caretakerId, String status);
+    boolean handleRequest(int requestId, boolean accept);
 }

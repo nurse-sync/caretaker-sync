@@ -16,6 +16,7 @@ public class CaretakerPojo {
     private String qualifications; // Qualifications or experience details
     private boolean isLiveIn; // Whether the caretaker is willing to live in
     private String status; // New field: e.g., "Available", "Booked"
+    private UserPojo assignedUser;
     
     public CaretakerPojo(int caretakerId, String name, String password, String gender, String category, double weeklyRate, 
             LocalDateTime availabilityFrom, LocalDateTime availabilityTo, String location, 
