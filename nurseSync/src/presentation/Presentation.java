@@ -15,6 +15,7 @@ import pojo.RequestPojo;
 import pojo.UserPojo;
 import service.AdminService;
 import service.CaretakerService;
+import service.RequestService;
 import service.UserService;
 import validators.InputValidator;
 import dao.RequestDao;
@@ -25,7 +26,8 @@ public class Presentation {
 	private UserService userService;
     private CaretakerService caretakerService;
     private AdminService adminService;
-//    private RequestDao requestDao;
+    private RequestService requestService;
+    
     private Scanner scanner;
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -140,10 +142,12 @@ public class Presentation {
         
         if (user != null && user.getPassword().equals(password)) {
             System.out.println("Login successful!");
-            handleUserOperations();
+            
+            userOperationsAfterLogin();
         } else {
             System.out.println("Invalid credentials.");
         }
+        
     }
     
     private void userOperationsAfterLogin() {
@@ -157,7 +161,8 @@ public class Presentation {
 
         switch (choice) {
             case 1:
-            	provideCaretakerPreferences();
+            	CaretakerPreferences preferences = new CaretakerPreferences(null, null, choice, null, null, null, false, null);
+            	provideCaretakerPreferences(preferences);
                 break;
                 
             case 2: 
@@ -168,8 +173,42 @@ public class Presentation {
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
+        
     }
     
+//    private void requestMenu(List matchedCaretakers) {
+//    	System.out.println("You Can Now Send Request for the Caretakers Listed!");
+//        System.out.println("Please Enter the Caretakers ID you want to send reqest to:");
+//        System.out.print("Enter your choice: ");
+//        
+//    }
+    
+
+    
+    private void handleCaretakerSelection(int userId) {
+        List<CaretakerPojo> matchingCaretakers = caretakerService.findCaretakersByPreferences(preferences);
+
+        // Print caretakers
+        for (CaretakerPojo caretaker : matchingCaretakers) {
+            System.out.println("ID: " + caretaker.getCaretakerId());
+            System.out.println("Name: " + caretaker.getName());
+            // Print other details as needed
+        }
+
+        System.out.print("Enter the ID of the caretaker you want to send a request to: ");
+        int caretakerId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        boolean success = requestService.sendRequest(userId, caretakerId);
+
+        if (success) {
+            System.out.println("Request sent successfully.");
+        } else {
+            System.out.println("Failed to send request. Please check the caretaker ID.");
+        }
+    }
+
+  
     private void createUserAccount() {
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
@@ -195,7 +234,7 @@ public class Presentation {
         
         if (success) {
             System.out.println("User account created successfully!");
-            handleUserOperations();
+//            handleUserOperations();
         } else {
             System.out.println("User account creation failed!");
         }
@@ -255,6 +294,32 @@ public class Presentation {
         // Get the value for "For Whom is the Service?" using the InputValidator
         String forWhom = InputValidator.validateForWhom(scanner);
         preferences.setForWhom(forWhom);
+        
+        List<CaretakerPojo> matchedCaretakers = caretakerService.findCaretakersByPreferences(preferences);
+
+        System.out.println("Matching Caretakers:");
+        if (matchedCaretakers.isEmpty()) {
+            System.out.println("No caretakers found matching the given preferences.");
+        } else {
+            // Display the matching caretakers
+            for (CaretakerPojo caretaker : matchedCaretakers) {
+                System.out.println("Caretaker ID: " + caretaker.getCaretakerId());
+                System.out.println("Name: " + caretaker.getName());
+                System.out.println("Gender: " + caretaker.getGender());
+                System.out.println("Category: " + caretaker.getCategory());
+                System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
+                System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+                System.out.println("Availability To: " + caretaker.getAvailabilityTo());
+                System.out.println("Location: " + caretaker.getLocation());
+                System.out.println("Phone Number: " + caretaker.getPhoneNumber());
+                System.out.println("Qualifications: " + caretaker.getQualifications());
+                System.out.println("Live-In: " + caretaker.getisLiveIn());
+                System.out.println("Status: " + caretaker.getStatus());
+                System.out.println("---------------------------------------------------");
+            }
+        }
+        
+//        requestMenu(matchedCaretakers);
     }
     
     private void updateUserAccount() {
@@ -568,6 +633,7 @@ public class Presentation {
                 System.out.println("Status: " + caretaker.getStatus());
             }
         }
+        
     }
 
     private void createCaretakerAccount() {
@@ -618,8 +684,8 @@ public class Presentation {
             status = "Unavailable";
         }
         
-        CaretakerPojo caretaker = new CaretakerPojo(0, name, password, gender, category, weeklyRate, availabilityFrom, availabilityTo, 
-                location, phoneNumber, qualifications, isLiveIn, status);
+//        CaretakerPojo caretaker = new CaretakerPojo(0, name, password, gender, category, weeklyRate, availabilityFrom, availabilityTo, 
+//                location, phoneNumber, qualifications, isLiveIn, status);
         
         boolean success = caretakerService.createCaretaker(caretaker);
         
@@ -954,123 +1020,6 @@ public class Presentation {
             System.out.println("Admin with ID " + adminId + " not found.");
         }
     }
-
-//    UserPojo user = userService.getUserById(1); 
-//    CaretakerPreferences preferences = user.getCaretakerPreferences();
-//    List<CaretakerPojo> matchingCaretakers = caretakerService..findCaretakersByPreferences(preferences);
-
-    
-//    private void findMatchingCaretakers() {
-//        // Collect user preferences
-//        CaretakerPreferences preferences = collectPreferences();
-//        List<CaretakerPojo> caretakers = userService.findMatchingCaretakers(preferences);
-//
-//        if (caretakers.isEmpty()) {
-//            System.out.println("No matching caretakers found.");
-//        } else {
-//            for (int i = 0; i < caretakers.size(); i++) {
-//                CaretakerPojo caretaker = caretakers.get(i);
-//                System.out.println((i + 1) + ". " + caretaker.getName() + " - " + caretaker.getCategory() +
-//                    " (Rate: " + caretaker.getWeeklyRate() + ")");
-//            }
-//        }
-//    }
-//
-//    private void sendRequestToCaretaker() {
-//        System.out.print("Enter your user ID: ");
-//        int userId = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline
-//
-//        System.out.print("Enter caretaker ID to send request: ");
-//        int caretakerId = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline
-//
-//        boolean success = userService.sendRequestToCaretaker(userId, caretakerId);
-//        if (success) {
-//            System.out.println("Request sent successfully.");
-//        } else {
-//            System.out.println("Failed to send request.");
-//        }
-//    }
-//
-//    private void viewRequests() {
-//        // Assuming caretakerId is available
-//        int caretakerId = 1; // Replace with actual caretaker ID
-//        List<RequestPojo> requests = requestDao.getAllRequestsByCaretakerId(caretakerId);
-//
-//        if (requests.isEmpty()) {
-//            System.out.println("No requests found.");
-//        } else {
-//            for (RequestPojo request : requests) {
-//                System.out.println("Request ID: " + request.getRequestId() +
-//                    ", User ID: " + request.getUserId() +
-//                    ", Status: " + request.getStatus());
-//            }
-//        }
-//    }
-//
-//    private void handleRequest() {
-//        System.out.print("Enter request ID: ");
-//        int requestId = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline
-//
-//        System.out.print("Accept or reject request? (a/r): ");
-//        String response = scanner.nextLine();
-//
-//        boolean accept = response.equalsIgnoreCase("a");
-//        boolean success = caretakerService.handleRequest(requestId, accept);
-//
-//        if (success) {
-//            System.out.println("Request handled successfully.");
-//        } else {
-//            System.out.println("Failed to handle request.");
-//        }
-//    }
-//    
-    
-    
-
-//    private void updateCaretakerStatus() {
-//        System.out.print("Enter Caretaker ID: ");
-//        int caretakerId = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline
-//
-//        System.out.print("Enter new status (Available/Booked): ");
-//        String status = scanner.nextLine();
-//
-//        boolean success = caretakerService.updateCaretakerStatus(caretakerId, status);
-//        if (success) {
-//            System.out.println("Caretaker status updated successfully.");
-//        } else {
-//            System.out.println("Caretaker not found. Status update failed.");
-//        }
-//    }
-
-//    public void handleLogin() {
-//        System.out.println("Login Options:");
-//        System.out.println("1. Admin Login");
-//        System.out.println("2. Caretaker Login");
-//        System.out.println("3. User Login");
-//        System.out.print("Enter your choice: ");
-//
-//        int choice = scanner.nextInt();
-//        scanner.nextLine(); // Consume newline
-//
-//        switch (choice) {
-//            case 1:
-//                adminLogin();
-//                break;
-//            case 2:
-//                caretakerLogin();
-//                break;
-//            case 3:
-//                userLogin();
-//                break;
-//            default:
-//                System.out.println("Invalid choice. Please try again.");
-//        }
-//    }
-
 
 }
 

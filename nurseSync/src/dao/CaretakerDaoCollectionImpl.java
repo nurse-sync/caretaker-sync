@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import pojo.CaretakerPreferences;
 public class CaretakerDaoCollectionImpl implements CaretakerDao{
 
     private Map<Integer, CaretakerPojo> caretakerData = new HashMap<>(); // HashMap to store caretakers
+    private List<CaretakerPojo> caretakerList = new ArrayList<>();
 
 	@Override
 	public boolean addCaretaker(CaretakerPojo caretaker) {
@@ -19,7 +21,7 @@ public class CaretakerDaoCollectionImpl implements CaretakerDao{
 	        if (caretakerData.containsKey(newId)) {
 	            return false; // Indicate failure if ID already exists (though unlikely in this case)
 	        }
-	        CaretakerPojo newServant = new CaretakerPojo(newId, caretaker.getName(), caretaker.getPassword(), caretaker.getGender(), caretaker.getCategory(), caretaker.getWeeklyRate(), caretaker.getAvailabilityFrom(), caretaker.getAvailabilityTo(), caretaker.getLocation(), caretaker.getPhoneNumber(), caretaker.getQualifications(), caretaker.getIsLiveIn(), caretaker.getStatus());
+	        CaretakerPojo newServant = new CaretakerPojo(newId, caretaker.getName(), caretaker.getUserName(), caretaker.getPassword(), caretaker.getGender(), caretaker.getCategory(), caretaker.getWeeklyRate(), caretaker.getAvailabilityFrom(), caretaker.getAvailabilityTo(), caretaker.getLocation(), caretaker.getPhoneNumber(), caretaker.getQualifications(), caretaker.getLiveIn(), caretaker.getStatus());
 	        caretakerData.put(newId, newServant);
 	        return true; // Indicate success
 	}
@@ -37,7 +39,7 @@ public class CaretakerDaoCollectionImpl implements CaretakerDao{
 	@Override
 	public boolean updateCaretaker(CaretakerPojo caretaker) {
 		 if (caretakerData.containsKey(caretaker.getCaretakerId())) {
-			 CaretakerPojo updatedCaretaker = new CaretakerPojo(caretaker.getCaretakerId(), caretaker.getName(), caretaker.getPassword(), caretaker.getGender(), caretaker.getCategory(), caretaker.getWeeklyRate(), caretaker.getAvailabilityFrom(), caretaker.getAvailabilityTo(), caretaker.getLocation(), caretaker.getPhoneNumber(), caretaker.getQualifications(), caretaker.getIsLiveIn(), caretaker.getStatus());
+			 CaretakerPojo updatedCaretaker = new CaretakerPojo(caretaker.getCaretakerId(), caretaker.getName(), caretaker.getUserName(), caretaker.getPassword(), caretaker.getGender(), caretaker.getCategory(), caretaker.getWeeklyRate(), caretaker.getAvailabilityFrom(), caretaker.getAvailabilityTo(), caretaker.getLocation(), caretaker.getPhoneNumber(), caretaker.getQualifications(), caretaker.getLiveIn(), caretaker.getStatus());
 	            caretakerData.put(caretaker.getCaretakerId(), updatedCaretaker);
 	            return true; // Indicate success
 	        } else {
@@ -56,9 +58,9 @@ public class CaretakerDaoCollectionImpl implements CaretakerDao{
 	}
 
 	@Override
-	public CaretakerPojo getCaretakerByUsername(String username) {
+	public CaretakerPojo getCaretakerByUsername(String userName) {
 		return caretakerData.values().stream()
-                .filter(caretaker -> caretaker.getName().equals(username))
+                .filter(caretaker -> caretaker.getUserName().equals(userName))
                 .findFirst()
                 .orElse(null);
 	}
@@ -77,14 +79,39 @@ public class CaretakerDaoCollectionImpl implements CaretakerDao{
 	@Override
 	public List<CaretakerPojo> findCaretakersByPreferences(CaretakerPreferences preferences) {
 		return caretakerData.values().stream()
-		        .filter(caretaker -> 
-		            (preferences.getCategory() == null || caretaker.getCategory().equals(preferences.getCategory())) &&
-		            (preferences.getGenderPreference() == null || caretaker.getGender().equals(preferences.getGenderPreference())) &&
-		            (preferences.getMaxWeeklyRate() == 0 || caretaker.getWeeklyRate() <= preferences.getMaxWeeklyRate()) &&
-		            (preferences.getServiceLocation() == null || caretaker.getLocation().equals(preferences.getServiceLocation())) &&
-		            (preferences.isLiveIn() == caretaker.getIsLiveIn())
-		        )
-		        .collect(Collectors.toList());
+	            .filter(caretaker -> {
+	                boolean matches = true;
+
+	                if (preferences.getCategory() != null && !preferences.getCategory().equals(caretaker.getCategory())) {
+	                    matches = false;
+	                }
+
+	                if (preferences.getGenderPreference() != null && !preferences.getGenderPreference().equals(caretaker.getGender())) {
+	                    matches = false;
+	                }
+
+	                if (preferences.getMaxWeeklyRate() > 0 && preferences.getMaxWeeklyRate() < caretaker.getWeeklyRate()) {
+	                    matches = false;
+	                }
+
+	                if (preferences.getRequiredFrom() != null && preferences.getRequiredTo() != null) {
+	                    Date availabilityFrom = caretaker.getAvailabilityFrom();
+	                    Date availabilityTo = caretaker.getAvailabilityTo();
+	                    
+	                    if (availabilityFrom.compareTo(preferences.getRequiredTo()) > 0 ||
+	                        availabilityTo.compareTo(preferences.getRequiredFrom()) < 0) {
+	                        matches = false;
+	                    }
+	                }
+
+
+	                if (preferences.isLiveIn() != caretaker.getLiveIn()) {
+	                    matches = false;
+	                }
+
+	                return matches;
+	            })
+	            .collect(Collectors.toList());
 	}
 
 }

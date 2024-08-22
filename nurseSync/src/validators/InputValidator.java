@@ -120,18 +120,18 @@ public class InputValidator {
     }
     
 	
-	public static Date promptAndValidateDate(Scanner scanner, String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine();
-            try {
-                // Parse and return java.sql.Date
-                return new Date(DATE_FORMATTER.parse(input).getTime());
-            } catch (ParseException e) {
-                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
-            }
-        }
-    }
+//	public static Date promptAndValidateDate(Scanner scanner, String prompt) {
+//        while (true) {
+//            System.out.print(prompt);
+//            String input = scanner.nextLine();
+//            try {
+//                // Parse and return java.sql.Date
+//                return new Date(DATE_FORMATTER.parse(input).getTime());
+//            } catch (ParseException e) {
+//                System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
+//            }
+//        }
+//    }
 
     public static void validateDateOrder(Date requiredFrom, Date requiredTo) throws IllegalArgumentException {
         if (requiredFrom.after(requiredTo)) {
@@ -210,6 +210,11 @@ public class InputValidator {
         }
 
         return forWhom;
+    }
+    
+    public static String promptAndValidateDate(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
     }
     
 //	public static LocalDate validateLocalDate(Scanner scanner, String prompt) throws InvalidInputException {

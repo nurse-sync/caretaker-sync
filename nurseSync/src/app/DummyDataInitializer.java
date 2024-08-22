@@ -1,67 +1,71 @@
 package app;
 
-import java.time.LocalDateTime;
-
-
-import pojo.AdminPojo;
-import pojo.CaretakerPojo;
-import pojo.CaretakerPreferences;
-import pojo.UserPojo;
-import service.AdminService;
-import service.AdminServiceImpl;
-import service.CaretakerService;
-import service.CaretakerServiceImpl;
 import service.UserService;
-import service.UserServiceImpl;
+import service.CaretakerService;
+import service.AdminService;
+import pojo.UserPojo;
+import pojo.CaretakerPojo;
+import pojo.AdminPojo;
+
+import java.sql.Date;
+import java.util.Arrays;
+import java.util.List;
 
 public class DummyDataInitializer {
-	
-	private UserService userService;
+
+    private UserService userService;
     private CaretakerService caretakerService;
     private AdminService adminService;
-    
-	public static void initialize(UserService userService, CaretakerService caretakerService, AdminService adminService) {
-		
-		    
-		CaretakerPreferences matchingPreferences = new CaretakerPreferences("Nurse", "Female", 5000.0, 
-	            LocalDateTime.of(2024, 8, 20, 9, 0), LocalDateTime.of(2024, 8, 25, 17, 0),
-	            "Chennai", true, "Mother");
 
-        CaretakerPreferences nonMatchingPreferences = new CaretakerPreferences("Caretaker", "Male", 4000.0, 
-            LocalDateTime.of(2024, 9, 1, 9, 0), LocalDateTime.of(2024, 9, 15, 18, 0),
-            "Bangalore", false, "Father");
+    public DummyDataInitializer(UserService userService, CaretakerService caretakerService, AdminService adminService) {
+        this.userService = userService;
+        this.caretakerService = caretakerService;
+        this.adminService = adminService;
+    }
 
-        UserPojo user1 = new UserPojo(1, "Ravi Kumar", "ravi_kumar", "password123", "ravi.kumar@example.com", 
-            "9876543210", "Chennai", matchingPreferences);
+    public void initializeData() {
+        initializeUsers();
+        initializeCaretakers();
+        initializeAdmins();
+    }
 
-        UserPojo user2 = new UserPojo(2, "Anjali Sharma", "anjali_sharma", "password456", "anjali.sharma@example.com", 
-            "9876543211", "Bangalore", nonMatchingPreferences);
+    private void initializeUsers() {
+        List<UserPojo> users = Arrays.asList(
+            new UserPojo(1, "Alice", "alice", "password", "alice@example.com", "123 Main St", "1234567890"),
+            new UserPojo(2, "Bob", "bob456", "password", "bob@example.com", "456 Maple St", "0987654321")
+        );
 
-        userService.createUser(user1);
-        userService.createUser(user2);
+        for (UserPojo user : users) {
+            userService.createUser(user);
+        }
+    }
 
-        // Admins
-        AdminPojo admin1 = new AdminPojo(1, "admin1", "adminpass123", "admin1@example.com", "1234567890", "Admin");
-        AdminPojo admin2 = new AdminPojo(2, "superadmin", "superpass456", "superadmin@example.com", "0987654321", "Super Admin");
+    private void initializeCaretakers() {
+        List<CaretakerPojo> caretakers = Arrays.asList(
+        		
+        new CaretakerPojo(1, "John", "john", "password", "Male", "Nurse", 500.0, 
+                         new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 86400000L * 30),
+                         "City Hospital", "9876543210", "B.Sc Nursing", false, "Available"),
+        
+        new CaretakerPojo(2, "Mary", "mary", "password", "Female", "Caregiver", 400.0, 
+                         new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + 86400000L * 30),
+                         "Green Valley", "1234567890", "Diploma in Caregiving", true, "Available")
+        );
 
-        adminService.createAdmin(admin1);
-        adminService.createAdmin(admin2);
+        for (CaretakerPojo caretaker : caretakers) {
+            caretakerService.createCaretaker(caretaker);
+        }
+    }
 
-        // Caretakers
-        CaretakerPojo matchingCaretaker = new CaretakerPojo(1, "Maya Sen", "1234", "Female", "Nurse", 5000.0, 
-            LocalDateTime.of(2024, 8, 20, 9, 0), LocalDateTime.of(2024, 8, 25, 17, 0), 
-            "Chennai", "9876543212", "B.Sc Nursing", true, "Available");
+    private void initializeAdmins() {
+        List<AdminPojo> admins = Arrays.asList(
+            new AdminPojo(1, "admin1", "admin1", "admin1@example.com", "1234567890", "Super Admin"),
+            new AdminPojo(2, "admin2", "admin2", "admin2@example.com", "0987654321", "Admin")
+            // Add more admins as needed
+        );
 
-        CaretakerPojo nonMatchingCaretaker = new CaretakerPojo(2, "Rajesh Verma", "12345", "Male", "Caretaker", 4000.0, 
-            LocalDateTime.of(2024, 9, 1, 9, 0), LocalDateTime.of(2024, 9, 15, 18, 0), 
-            "Bangalore", "9876543213", "Experienced Caregiver", false, "Available");
-
-        CaretakerPojo anotherMatchingCaretaker = new CaretakerPojo(3, "Sita Devi", "qwer", "Female", "Nurse", 4500.0, 
-            LocalDateTime.of(2024, 8, 20, 9, 0), LocalDateTime.of(2024, 8, 25, 17, 0), 
-            "Chennai", "9876543214", "Certified Nurse", true, "Available");
-
-        caretakerService.createCaretaker(matchingCaretaker);
-        caretakerService.createCaretaker(nonMatchingCaretaker);
-        caretakerService.createCaretaker(anotherMatchingCaretaker);
-	    }
+        for (AdminPojo admin : admins) {
+            adminService.createAdmin(admin);
+        }
+    }
 }

@@ -14,5 +14,5 @@ public interface UserService {
     boolean updateUser(UserPojo user);
     boolean deleteUser(int userId);
     List<CaretakerPojo> findMatchingCaretakers(CaretakerPreferences preferences);
-    boolean sendRequestToCaretaker(int userId, int caretakerId);
+    boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName, int patientAge, String patientGender);
 }

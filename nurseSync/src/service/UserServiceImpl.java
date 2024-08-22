@@ -58,14 +58,20 @@ public class UserServiceImpl implements UserService{
         return caretakerDao.findCaretakersByPreferences(preferences);
 
 	}
-
-	@Override
-	public boolean sendRequestToCaretaker(int userId, int caretakerId) {
-		if (caretakerDao.getCaretakerById(caretakerId) != null) {
-            RequestPojo request = new RequestPojo(userId, caretakerId, "Pending");
-            return requestDao.addRequest(request);
-        }
-        return false;
-	}
 	
+	 @Override
+	 public boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName, int patientAge, String patientGender) {
+	        if (caretakerDao.getCaretakerById(caretakerId) != null) {
+	            int newRequestId = generateNewRequestId(); 
+	            
+	            RequestPojo request = new RequestPojo(newRequestId, userId, caretakerId, "Pending", serviceLocation, patientName, patientAge, patientGender);
+	            return requestDao.addRequest(request);
+	        }
+	        return false;
+	 }
+	 
+	 private int generateNewRequestId() {
+	        int maxRequestId = requestDao.getMaxRequestId();
+	        return maxRequestId + 1;
+	    }
 }
