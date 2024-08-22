@@ -6,7 +6,9 @@ import java.text.ParseException;
 //import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -36,8 +38,9 @@ public class PresentationDemo {
 	private Scanner scanner;
 	private int currentUserId;
 	private int choice;
+	private List<CaretakerPojo> caretakerList = new ArrayList<>();
 
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public PresentationDemo(UserService userService, CaretakerService caretakerService, AdminService adminService,
 			RequestService requestService) {
@@ -417,226 +420,227 @@ public class PresentationDemo {
 	}
 
 	private void provideCaretakerPreferences(CaretakerPreferences preferences) {
-	    try {
-	        // Gather user input
-	        String category = InputValidator.validateCategory(scanner);
-	        preferences.setCategory(category);
+		try {
+			// Gather user input
+			String category = InputValidator.validateCategory(scanner);
+			preferences.setCategory(category);
 
-	        String genderPreference = InputValidator.validateGenderPreference(scanner);
-	        preferences.setGenderPreference(genderPreference);
+			String genderPreference = InputValidator.validateGenderPreference(scanner);
+			preferences.setGenderPreference(genderPreference);
 
-	        double maxWeeklyRate = InputValidator.validateMaxWeeklyRate(scanner);
-	        preferences.setMaxWeeklyRate(maxWeeklyRate);
+			double maxWeeklyRate = InputValidator.validateMaxWeeklyRate(scanner);
+			preferences.setMaxWeeklyRate(maxWeeklyRate);
 
-	        boolean validInput = false;
-	        Date requiredFrom = null;
-	        Date requiredTo = null;
+			boolean validInput = false;
+			Date requiredFrom = null;
+			Date requiredTo = null;
 
-	        while (!validInput) {
-	            try {
-	                String fromDateString = InputValidator.promptAndValidateDate(scanner, "Enter Required From (yyyy-MM-dd): ");
-	                String toDateString = InputValidator.promptAndValidateDate(scanner, "Enter Required To (yyyy-MM-dd): ");
+			while (!validInput) {
+				try {
+					String fromDateString = InputValidator.promptAndValidateDate(scanner,
+							"Enter Required From (yyyy-MM-dd): ");
+					String toDateString = InputValidator.promptAndValidateDate(scanner,
+							"Enter Required To (yyyy-MM-dd): ");
 
-	                requiredFrom = DateUtils.parseSqlDate(fromDateString);
-	                requiredTo = DateUtils.parseSqlDate(toDateString);
+					requiredFrom = DateUtils.parseSqlDate(fromDateString);
+					requiredTo = DateUtils.parseSqlDate(toDateString);
 
-	                if (!requiredFrom.before(requiredTo)) {
-	                    throw new IllegalArgumentException("The 'Required From' date must be before the 'Required To' date.");
-	                }
+					if (!requiredFrom.before(requiredTo)) {
+						throw new IllegalArgumentException(
+								"The 'Required From' date must be before the 'Required To' date.");
+					}
 
-	                preferences.setRequiredFrom(requiredFrom);
-	                preferences.setRequiredTo(requiredTo);
+					preferences.setRequiredFrom(requiredFrom);
+					preferences.setRequiredTo(requiredTo);
 
-	                validInput = true; // Exit loop on successful input
-	            } catch (IllegalArgumentException e) {
-	                System.out.println("\nError: " + e.getMessage());
-	                System.out.println("Please try again.");
-	            }
-	        }
+					validInput = true; // Exit loop on successful input
+				} catch (IllegalArgumentException e) {
+					System.out.println("\nError: " + e.getMessage());
+					System.out.println("Please try again.");
+				}
+			}
 
-	        String serviceLocation = InputValidator.validateServiceLocation(scanner);
-	        preferences.setServiceLocation(serviceLocation);
+			String serviceLocation = InputValidator.validateServiceLocation(scanner);
+			preferences.setServiceLocation(serviceLocation);
 
-	        boolean liveIn = InputValidator.validateLiveIn(scanner);
-	        preferences.setLiveIn(liveIn);
+			boolean liveIn = InputValidator.validateLiveIn(scanner);
+			preferences.setLiveIn(liveIn);
 
-	        String forWhom = InputValidator.validateForWhom(scanner);
-	        preferences.setForWhom(forWhom);
+			String forWhom = InputValidator.validateForWhom(scanner);
+			preferences.setForWhom(forWhom);
 
-	        // Find and display matching caretakers
-	        List<CaretakerPojo> matchedCaretakers = caretakerService.findCaretakersByPreferences(preferences);
+			// Find and display matching caretakers
+			List<CaretakerPojo> matchedCaretakers = caretakerService.findCaretakersByPreferences(preferences);
 
-	        System.out.println("\n--- Matching Caretakers ---");
-	        if (matchedCaretakers.isEmpty()) {
-	            System.out.println("No caretakers found matching the given preferences.");
-	        } else {
-	            for (CaretakerPojo caretaker : matchedCaretakers) {
-	                System.out.println("---------------------------------------------------");
-	                System.out.printf("Caretaker ID       : %d%n", caretaker.getCaretakerId());
-	                System.out.printf("Name               : %s%n", caretaker.getName());
-	                System.out.printf("Gender             : %s%n", caretaker.getGender());
-	                System.out.printf("Category           : %s%n", caretaker.getCategory());
-	                System.out.printf("Weekly Rate        : %.2f%n", caretaker.getWeeklyRate());
-	                System.out.printf("Availability From  : %s%n", caretaker.getAvailabilityFrom());
-	                System.out.printf("Availability To    : %s%n", caretaker.getAvailabilityTo());
-	                System.out.printf("Location           : %s%n", caretaker.getLocation());
-	                System.out.printf("Phone Number       : %s%n", caretaker.getPhoneNumber());
-	                System.out.printf("Qualifications     : %s%n", caretaker.getQualifications());
-	                System.out.printf("Live-In            : %b%n", caretaker.getLiveIn());
-	                System.out.printf("Status             : %s%n", caretaker.getStatus());
-	                System.out.println("---------------------------------------------------");
-	            }
-	        }
-	    } catch (ParseException e) {
-	        System.out.println("\nError: An error occurred while parsing dates. Please check the date format and try again.");
-	        GlobalExceptionHandler.handleParseException(e);
-	    } catch (InputMismatchException e) {
-	        GlobalExceptionHandler.handleInputMismatchException(e);
-	    } catch (NoSuchElementException e) {
-	        GlobalExceptionHandler.handleNoSuchElementException(e);
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+			System.out.println("\n--- Matching Caretakers ---");
+			if (matchedCaretakers.isEmpty()) {
+				System.out.println("No caretakers found matching the given preferences.");
+			} else {
+				for (CaretakerPojo caretaker : matchedCaretakers) {
+					System.out.println("---------------------------------------------------");
+					System.out.printf("Caretaker ID       : %d%n", caretaker.getCaretakerId());
+					System.out.printf("Name               : %s%n", caretaker.getName());
+					System.out.printf("Gender             : %s%n", caretaker.getGender());
+					System.out.printf("Category           : %s%n", caretaker.getCategory());
+					System.out.printf("Weekly Rate        : %.2f%n", caretaker.getWeeklyRate());
+					System.out.printf("Availability From  : %s%n", caretaker.getAvailabilityFrom());
+					System.out.printf("Availability To    : %s%n", caretaker.getAvailabilityTo());
+					System.out.printf("Location           : %s%n", caretaker.getLocation());
+					System.out.printf("Phone Number       : %s%n", caretaker.getPhoneNumber());
+					System.out.printf("Qualifications     : %s%n", caretaker.getQualifications());
+					System.out.printf("Live-In            : %b%n", caretaker.getLiveIn());
+					System.out.printf("Status             : %s%n", caretaker.getStatus());
+					System.out.println("---------------------------------------------------");
+				}
+			}
+		} catch (ParseException e) {
+			System.out.println(
+					"\nError: An error occurred while parsing dates. Please check the date format and try again.");
+			GlobalExceptionHandler.handleParseException(e);
+		} catch (InputMismatchException e) {
+			GlobalExceptionHandler.handleInputMismatchException(e);
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	public void caretakerMenu() {
-	    while (true) {
-	        try {
-	            System.out.println("\n--- Start Your Freelancing Journey with Nurse Sync ---");
-	            System.out.println("1. Existing User? Sign In");
-	            System.out.println("2. New User? Sign Up");
-	            System.out.println("3. Exit");
-	            System.out.println("-----------------------------------------------");
-	            System.out.print("Enter your choice: ");
+		while (true) {
+			try {
+				System.out.println("\n--- Start Your Freelancing Journey with Nurse Sync ---");
+				System.out.println("1. Existing User? Sign In");
+				System.out.println("2. New User? Sign Up");
+				System.out.println("3. Exit");
+				System.out.println("-----------------------------------------------");
+				System.out.print("Enter your choice: ");
 
-	            int choice = getUserChoice(); 
+				int choice = getUserChoice();
 
-	            switch (choice) {
-	                case 1:
-	                    System.out.println("\n--- Sign In ---");
-	                    caretakerLogin();
-	                    break;
+				switch (choice) {
+				case 1:
+					System.out.println("\n--- Sign In ---");
+					caretakerLogin();
+					break;
 
-	                case 2:
-	                    System.out.println("\n--- Sign Up ---");
-	                    caretakerSignUp();
-	                    break;
+				case 2:
+					System.out.println("\n--- Sign Up ---");
+					caretakerSignUp();
+					break;
 
-	                case 3:
-	                    System.out.println("\nExiting the application. Thank you for using Nurse Sync!");
-	                    return;
+				case 3:
+					System.out.println("\nExiting the application. Thank you for using Nurse Sync!");
+					return;
 
-	                default:
-	                    System.out.println("\nInvalid choice. Please enter a number between 1 and 3.");
-	                    break;
-	            }
-	        } catch (InputMismatchException e) {
-	            GlobalExceptionHandler.handleInputMismatchException(e);
-	        } catch (NoSuchElementException e) {
-	            GlobalExceptionHandler.handleNoSuchElementException(e);
-	        } catch (Exception e) {
-	            GlobalExceptionHandler.handleException(e);
-	        }
-	    }
+				default:
+					System.out.println("\nInvalid choice. Please enter a number between 1 and 3.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				GlobalExceptionHandler.handleInputMismatchException(e);
+			} catch (NoSuchElementException e) {
+				GlobalExceptionHandler.handleNoSuchElementException(e);
+			} catch (Exception e) {
+				GlobalExceptionHandler.handleException(e);
+			}
+		}
 	}
 
 	private void caretakerLogin() {
-	    try {
-	        System.out.println("\n--- Caretaker Login ---");
+		try {
+			System.out.println("\n--- Caretaker Login ---");
 
-	        System.out.print("Enter Username: ");
-	        String username = scanner.nextLine();
+			System.out.print("Enter Username: ");
+			String username = scanner.nextLine();
 
-	        System.out.print("Enter Password: ");
-	        String password = scanner.nextLine();
+			System.out.print("Enter Password: ");
+			String password = scanner.nextLine();
 
-	        CaretakerPojo caretaker = caretakerService.getCaretakerByUsername(username);
+			CaretakerPojo caretaker = caretakerService.getCaretakerByUsername(username);
 
-	        if (caretaker != null && caretaker.getPassword().equals(password)) {
-	            currentUserId = caretaker.getCaretakerId();
-	            System.out.println("\nLogin Successful! Welcome, " + caretaker.getName() + "!");
-	            
-	            caretakerRequestOperations(caretaker.getCaretakerId());
-	        } else {
-	            System.out.println("\n--- Login Failed ---");
-	            System.out.println("Invalid credentials. Please try again.");
-	        }
+			if (caretaker != null && caretaker.getPassword().equals(password)) {
+				currentUserId = caretaker.getCaretakerId();
+				System.out.println("\nLogin Successful! Welcome, " + caretaker.getName() + "!");
 
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+				caretakerRequestOperations(caretaker.getCaretakerId());
+			} else {
+				System.out.println("\n--- Login Failed ---");
+				System.out.println("Invalid credentials. Please try again.");
+			}
+
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private void caretakerSignUp() {
-	    try {
-	        System.out.println("\n--- Caretaker Sign-Up ---");
+		try {
+			System.out.println("\n--- Caretaker Sign-Up ---");
 
-	        System.out.print("Enter your Name: ");
-	        String name = scanner.nextLine();
+			System.out.print("Enter your Name: ");
+			String name = scanner.nextLine();
 
-	        System.out.print("Enter your Username: ");
-	        String username = scanner.nextLine();
+			System.out.print("Enter your Username: ");
+			String username = scanner.nextLine();
 
-	        System.out.print("Enter your Password: ");
-	        String password = scanner.nextLine();
+			System.out.print("Enter your Password: ");
+			String password = scanner.nextLine();
 
-	        System.out.print("Enter your Gender (Male/Female/Others): ");
-	        String gender = scanner.nextLine();
+			System.out.print("Enter your Gender (Male/Female/Others): ");
+			String gender = scanner.nextLine();
 
-	        System.out.print("Enter your Category (e.g., Nurse, Caretaker): ");
-	        String category = scanner.nextLine();
+			System.out.print("Enter your Category (e.g., Nurse, Caretaker): ");
+			String category = scanner.nextLine();
 
-	        System.out.print("Enter your Weekly Rate: ");
-	        double weeklyRate = getUserInputAsDouble();
+			System.out.print("Enter your Weekly Rate: ");
+			double weeklyRate = getUserInputAsDouble();
 
-	        System.out.print("Enter Availability From (yyyy-MM-dd): ");
-	        Date availabilityFrom = getDateFromUser();
+			System.out.print("Enter Availability From (yyyy-MM-dd): ");
+			Date availabilityFrom = getDateFromUser();
 
-	        System.out.print("Enter Availability To (yyyy-MM-dd): ");
-	        Date availabilityTo = getDateFromUser();
+			System.out.print("Enter Availability To (yyyy-MM-dd): ");
+			Date availabilityTo = getDateFromUser();
 
-	        System.out.print("Enter your Location: ");
-	        String location = scanner.nextLine();
+			System.out.print("Enter your Location: ");
+			String location = scanner.nextLine();
 
-	        System.out.print("Enter your Phone Number: ");
-	        String phoneNumber = scanner.nextLine();
+			System.out.print("Enter your Phone Number: ");
+			String phoneNumber = scanner.nextLine();
 
-	        System.out.print("Enter your Qualifications: ");
-	        String qualifications = scanner.nextLine();
+			System.out.print("Enter your Qualifications: ");
+			String qualifications = scanner.nextLine();
 
-	        System.out.print("Are you willing to Live In? (yes/no): ");
-	        boolean liveIn = getUserInputAsBoolean();
+			System.out.print("Are you willing to Live In? (yes/no): ");
+			boolean liveIn = getUserInputAsBoolean();
 
-	        String status = "Available"; // Default status
+			String status = "Available"; // Default status
 
-	        // Create CaretakerPojo object
-	        CaretakerPojo caretaker = new CaretakerPojo(
-	            0, name, username, password, gender, category, weeklyRate,
-	            availabilityFrom, availabilityTo, location, phoneNumber,
-	            qualifications, liveIn, status
-	        );
+			// Create CaretakerPojo object
+			CaretakerPojo caretaker = new CaretakerPojo(0, name, username, password, gender, category, weeklyRate,
+					availabilityFrom, availabilityTo, location, phoneNumber, qualifications, liveIn, status);
 
-	        // Attempt to create the caretaker
-	        boolean success = caretakerService.createCaretaker(caretaker);
+			// Attempt to create the caretaker
+			boolean success = caretakerService.createCaretaker(caretaker);
 
-	        if (success) {
-	            System.out.println("\n--- Sign-Up Successful ---");
-	            System.out.println("Caretaker account created successfully!");
-	            caretakerLogin();
-	        } else {
-	            System.out.println("\n--- Sign-Up Failed ---");
-	            System.out.println("Caretaker account creation failed! The username might be taken.");
-	        }
+			if (success) {
+				System.out.println("\n--- Sign-Up Successful ---");
+				System.out.println("Caretaker account created successfully!");
+				caretakerLogin();
+			} else {
+				System.out.println("\n--- Sign-Up Failed ---");
+				System.out.println("Caretaker account creation failed! The username might be taken.");
+			}
 
-	    } catch (IllegalArgumentException e) {
-	        GlobalExceptionHandler.handleDateParseException(e);
-	    } catch (InputMismatchException e) {
-	        GlobalExceptionHandler.handleInputMismatchException(e);
-	    } catch (NoSuchElementException e) {
-	        GlobalExceptionHandler.handleNoSuchElementException(e);
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+		} catch (IllegalArgumentException e) {
+			GlobalExceptionHandler.handleDateParseException(e);
+		} catch (InputMismatchException e) {
+			GlobalExceptionHandler.handleInputMismatchException(e);
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private double getUserInputAsDouble() {
@@ -685,7 +689,7 @@ public class PresentationDemo {
 				System.out.println("3. Exit");
 				System.out.println("------------------------------------");
 
-				int choice = getUserChoice(); 
+				int choice = getUserChoice();
 
 				switch (choice) {
 				case 1:
@@ -773,7 +777,7 @@ public class PresentationDemo {
 
 			System.out.print("Enter the Request ID to approve or reject: ");
 			int requestId = scanner.nextInt();
-			scanner.nextLine(); 
+			scanner.nextLine();
 
 			System.out.print("Approve (yes/no): ");
 			String approveInput = scanner.nextLine();
@@ -798,43 +802,385 @@ public class PresentationDemo {
 			GlobalExceptionHandler.handleException(e);
 		}
 	}
-	
+
 	private void adminMenu() {
+		try {
+			System.out.println("\n==============================");
+			System.out.println("         Admin Menu");
+			System.out.println("==============================");
+			System.out.println("1. Sign In");
+			System.out.println("2. Exit");
+			System.out.println();
+
+			int choice = getUserChoice();
+
+			switch (choice) {
+			case 1:
+				System.out.println("\n--- Signing In ---");
+				adminSignIn();
+				break;
+
+			case 2:
+				System.out.println("\nExiting... Thank you!");
+				return;
+
+			default:
+				GlobalExceptionHandler.handleInvalidChoice();
+				break;
+			}
+		} catch (InputMismatchException e) {
+			GlobalExceptionHandler.handleInputMismatchException(e);
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
+	}
+
+	private void adminSignIn() {
+		try {
+			System.out.print("Enter Admin Username: ");
+			String username = scanner.nextLine();
+
+			System.out.print("Enter Admin Password: ");
+			String password = scanner.nextLine();
+
+			AdminPojo admin = adminService.getAdminByUsername(username);
+
+			if (admin != null && admin.getPassword().equals(password)) {
+				System.out.println("\n-------------------------------------------");
+				System.out.println("        Login Successful! Welcome, " + username + "!");
+				System.out.println("-------------------------------------------");
+				showAdminMenu();
+			} else {
+				System.out.println("\n-------------------------------------------");
+				System.out.println("        [ERROR] Invalid credentials.");
+				System.out.println("        Please check your username and password.");
+				System.out.println("        Try again.");
+				System.out.println("-------------------------------------------");
+			}
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
+	}
+
+	private void showAdminMenu() {
+		boolean validChoice = false;
+
+		while (!validChoice) {
+			try {
+				System.out.println("\n--- Admin Menu ---");
+				System.out.println("1. Manage Caretakers");
+				System.out.println("2. Manage Users");
+				System.out.println("3. View Reports");
+				System.out.println("4. Logout");
+				System.out.println("-------------------");
+				System.out.print("Enter your choice: ");
+
+				int choice = scanner.nextInt();
+				scanner.nextLine();
+
+				switch (choice) {
+				case 1:
+					System.out.println("\n--- Managing Caretakers ---");
+					manageCaretakers();
+					validChoice = true;
+					break;
+				case 2:
+					System.out.println("\n--- Managing Users ---");
+					manageUsers();
+					validChoice = true;
+					break;
+				case 3:
+					System.out.println("\n--- Viewing Reports ---");
+					viewReports();
+					validChoice = true;
+					break;
+				case 4:
+					System.out.println("\nLogging out. Have a great day!");
+					validChoice = true;
+					return;
+				default:
+					System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				// non-integer values
+				System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
+				scanner.nextLine(); // Consume invalid input
+			} catch (Exception e) {
+				GlobalExceptionHandler.handleException(e);
+			}
+		}
+	}
+
+	private void manageCaretakers() {
+	    boolean exit = false;
+
+	    while (!exit) {
+	        try {
+	            System.out.println("\n==============================");
+	            System.out.println("    Caretaker Management Menu   ");
+	            System.out.println("==============================");
+	            System.out.println("1. List All Caretakers");
+	            System.out.println("2. Get Caretaker by ID");
+	            System.out.println("3. Remove Caretaker");
+	            System.out.println("4. Exit");
+	            System.out.println("------------------------------");
+	            System.out.print("Please enter your choice: ");
+
+	            int choice = scanner.nextInt();
+	            scanner.nextLine(); 
+
+	            switch (choice) {
+	                case 1:
+	                    System.out.println("\n--- Listing All Caretakers ---");
+	                    listAllCaretakers();
+	                    break;
+	                case 2:
+	                    System.out.println("\n--- Retrieving Caretaker by ID ---");
+	                    retrieveCaretakerById();
+	                    break;
+	                case 3:
+	                    System.out.println("\n--- Removing Caretaker ---");
+	                    deleteCaretakerAccount();
+	                    break;
+	                case 4:
+	                    exit = true;
+	                    System.out.println("\nExiting Caretaker Management. Have a great day!");
+	                    break;
+	                default:
+	                    System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
+	                    break;
+	            }
+	        } catch (InputMismatchException e) {
+	            System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
+	            scanner.nextLine(); 
+	        } catch (NoSuchElementException e) {
+	            // Handle cases where expected input is missing
+	            System.out.println("\n[ERROR] No input received. Please try again.");
+	        } catch (Exception e) {
+	            GlobalExceptionHandler.handleException(e);
+	        }
+	    }
+	}
+
+	private void retrieveCaretakerById() {
 	    try {
-	        System.out.println("\n==============================");
-	        System.out.println("         Admin Menu");
-	        System.out.println("==============================");
-	        System.out.println("1. Sign In");
-	        System.out.println("2. Exit");
-	        System.out.println();
+	        System.out.print("\nPlease enter the Caretaker ID you want to retrieve: ");
+	        int caretakerId = scanner.nextInt();
+	        scanner.nextLine();
 
-	        int choice = getUserChoice(); 
+	        CaretakerPojo caretaker = findCaretakerById(caretakerId);
 
-	        switch (choice) {
-	            case 1:
-	                System.out.println("\n--- Signing In ---");
-	                adminSignIn(); 
-	                break;
-
-	            case 2:
-	                System.out.println("\nExiting... Thank you!");
-	                return; 
-
-	            default:
-	                GlobalExceptionHandler.handleInvalidChoice(); 
-	                break;
+	        if (caretaker != null) {
+	            // Display caretaker details
+	            System.out.println("\n====================================");
+	            System.out.println("         Caretaker Details          ");
+	            System.out.println("====================================");
+	            System.out.println("ID               : " + caretaker.getCaretakerId());
+	            System.out.println("Name             : " + caretaker.getName());
+	            System.out.println("Username         : " + caretaker.getUserName());
+	            System.out.println("Gender           : " + caretaker.getGender());
+	            System.out.println("Category         : " + caretaker.getCategory());
+	            System.out.println("Weekly Rate      : " + caretaker.getWeeklyRate());
+	            System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+	            System.out.println("Availability To  : " + caretaker.getAvailabilityTo());
+	            System.out.println("Location         : " + caretaker.getLocation());
+	            System.out.println("Phone Number     : " + caretaker.getPhoneNumber());
+	            System.out.println("Qualifications   : " + caretaker.getQualifications());
+	            System.out.println("Live-In          : " + caretaker.getLiveIn());
+	            System.out.println("Status           : " + caretaker.getStatus());
+	            System.out.println("====================================\n");
+	        } else {
+	            System.out.println("\n[ERROR] Caretaker with ID " + caretakerId + " not found.\n");
 	        }
 	    } catch (InputMismatchException e) {
-	        GlobalExceptionHandler.handleInputMismatchException(e); 
+	        System.out.println("\n[ERROR] Invalid input. Please enter a valid number for the Caretaker ID.\n");
+	        scanner.nextLine(); 
 	    } catch (NoSuchElementException e) {
-	        GlobalExceptionHandler.handleNoSuchElementException(e); 
+	        System.out.println("\n[ERROR] No input received. Please try again.\n");
 	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e); 
+	        GlobalExceptionHandler.handleException(e);
+	    }
+	}
+
+	private CaretakerPojo findCaretakerById(int caretakerId) {
+	    try {
+	        for (CaretakerPojo caretaker : caretakerList) {
+	            if (caretaker.getCaretakerId() == caretakerId) {
+	                return caretaker;
+	            }
+	        }
+	        System.out.println("\n[INFO] No caretaker found with ID: " + caretakerId + ".\n");
+	    } catch (Exception e) {
+	        GlobalExceptionHandler.handleException(e);
+	    }
+	    return null;
+	}
+
+	private void deleteCaretakerAccount() {
+	    try {
+	        System.out.println("\n=== Delete Caretaker Account ===");
+	        System.out.print("Enter Caretaker ID to delete: ");
+	        
+	        int caretakerId = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
+	        
+	        boolean success = caretakerService.deleteCaretaker(caretakerId);
+	        
+	        if (success) {
+	            System.out.println("\n>>> Caretaker account deleted successfully.");
+	        } else {
+	            System.out.println("\n>>> Failed to delete caretaker account. Caretaker ID not found.");
+	        }
+	    } catch (InputMismatchException e) {
+	        GlobalExceptionHandler.handleInputMismatchException(e);
+	    } catch (NoSuchElementException e) {
+	        GlobalExceptionHandler.handleNoSuchElementException(e);
+	    } catch (Exception e) {
+	        GlobalExceptionHandler.handleException(e);
+	    }
+	}
+
+	private void manageUsers() {
+	    boolean exit = false;
+
+	    while (!exit) {
+	        try {
+	            System.out.println("\n=============================");
+	            System.out.println("       User Management Menu    ");
+	            System.out.println("=============================");
+	            System.out.println("1. List All Users");
+	            System.out.println("2. Get User by ID");
+	            System.out.println("3. Remove User");
+	            System.out.println("4. Exit");
+	            System.out.println("-----------------------------");
+	            System.out.print("Please enter your choice: ");
+
+	            int choice = scanner.nextInt();
+	            scanner.nextLine(); 
+
+	            switch (choice) {
+	                case 1:
+	                    System.out.println("\n--- Listing All Users ---");
+	                    displayAllUsers();
+	                    break;
+	                case 2:
+	                    System.out.println("\n--- Retrieving User by ID ---");
+	                    retrieveUserById();
+	                    break;
+	                case 3:
+	                    System.out.println("\n--- Removing User ---");
+	                    deleteUserWithId();
+	                    break;
+	                case 4:
+	                    exit = true;
+	                    System.out.println("\nExiting User Management. Have a great day!");
+	                    break;
+	                default:
+	                    System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
+	                    break;
+	            }
+	        } catch (InputMismatchException e) {
+	            System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
+	            scanner.nextLine(); 
+	        } catch (NoSuchElementException e) {
+	            System.out.println("\n[ERROR] No input received. Please try again.");
+	        } catch (Exception e) {
+	            GlobalExceptionHandler.handleException(e);
+	        }
+	    }
+	}
+
+	private void displayAllUsers() {
+	    System.out.println("\n===============================");
+	    System.out.println("      List of All Users");
+	    System.out.println("===============================");
+
+	    try {
+	        // Call the service method to get all users
+	        List<UserPojo> users = userService.getAllUsers();
+
+	        // Check if the list is empty
+	        if (users.isEmpty()) {
+	            System.out.println("No users found.");
+	        } else {
+	            // Loop through the list of users and display their details
+	            for (UserPojo user : users) {
+	                System.out.println("\n--- User Details ---");
+	                System.out.println("User ID        : " + user.getUserId());
+	                System.out.println("Name           : " + user.getName());
+	                System.out.println("Username       : " + user.getUsername());
+	                System.out.println("Email          : " + user.getEmail());
+	                System.out.println("Phone Number   : " + user.getPhoneNumber());
+	                System.out.println("Address        : " + user.getAddress());
+	                System.out.println("-------------------------");
+	            }
+	        }
+	    } catch (Exception e) {
+	        System.out.println("\n[ERROR] An unexpected error occurred while retrieving the users.");
+	        GlobalExceptionHandler.handleException(e);
+	    }
+	}
+
+	private void retrieveUserById() {
+        System.out.println("View Caretaker Account");
+
+        System.out.print("Enter Caretaker ID to view: ");
+        int caretakerId = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        CaretakerPojo caretaker = caretakerService.getCaretakerById(caretakerId);
+        
+  if (caretaker != null) {
+            System.out.println("Caretaker Details:");
+            System.out.println("Name: " + caretaker.getName());
+            System.out.println("Gender: " + caretaker.getGender());
+            System.out.println("Category: " + caretaker.getCategory());
+            System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
+            System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+            System.out.println("Availability To: " + caretaker.getAvailabilityTo());
+            System.out.println("Location: " + caretaker.getLocation());
+            System.out.println("Phone Number: " + caretaker.getPhoneNumber());
+            System.out.println("Qualifications: " + caretaker.getQualifications());
+            System.out.println("Live-In: " + caretaker.getLiveIn());
+        } else {
+            System.out.println("Caretaker with ID " + caretakerId + " not found.");
+        }
+    }
+	
+	private void deleteUserWithId() {
+	    System.out.println("\n==============================");
+	    System.out.println("    Delete User Account");
+	    System.out.println("==============================");
+
+	    try {
+	        System.out.print("Enter User ID to delete: ");
+	        int userId = scanner.nextInt();
+	        scanner.nextLine(); // Consume newline
+
+	        boolean success = userService.deleteUser(userId);
+
+	        if (success) {
+	            System.out.println("\n[INFO] User account deleted successfully.");
+	        } else {
+	            System.out.println("\n[INFO] User with ID " + userId + " not found.");
+	        }
+	    } catch (InputMismatchException e) {
+	        // Handle invalid input
+	        System.out.println("\n[ERROR] Invalid input. Please enter a valid numeric ID.");
+	        scanner.nextLine(); 
+	    } catch (Exception e) {
+	        System.out.println("\n[ERROR] An unexpected error occurred while deleting the user account.");
+	        GlobalExceptionHandler.handleException(e);
 	    }
 	}
 
 	
-	private void adminSignIn() {
-		
+	private void viewReports() {
 	}
+
 }
