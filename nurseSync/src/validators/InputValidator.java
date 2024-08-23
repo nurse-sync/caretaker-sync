@@ -1,7 +1,11 @@
 package validators;
 
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import exceptions.DateUtils;
+import exceptions.GlobalExceptionHandler;
 import exceptions.InvalidInputException;
 
 import java.sql.Date;
@@ -13,7 +17,8 @@ import java.time.format.DateTimeParseException;
 public class InputValidator {
 
 	private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
-
+    private static Scanner scanner = new Scanner(System.in);
+	
 	public static String validateCategory(Scanner scanner) {
 		String category = "";
 		boolean validInput = false;
@@ -202,5 +207,37 @@ public class InputValidator {
 		System.out.print(prompt);
 		return scanner.nextLine();
 	}
+	
+	public static String promptForDate(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String dateString = scanner.nextLine();
+            try {
+                DateUtils.parseSqlDate(dateString); // Validate date format
+                return dateString; // Return valid date string
+            } catch (ParseException e) {
+                System.out.println("Error: Invalid date format. Please use yyyy-MM-dd.");
+            }
+        }
+    }
+
+	public static int getValidatedNumericInput(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline
+                return choice;
+            } catch (InputMismatchException e) {
+                GlobalExceptionHandler.handleInputMismatchException(e);
+                scanner.nextLine(); // Clear the buffer
+            } catch (NoSuchElementException e) {
+                GlobalExceptionHandler.handleNoSuchElementException(e);
+                scanner.nextLine(); // Clear the buffer
+            } catch (Exception e) {
+                GlobalExceptionHandler.handleException(e);
+            }
+        }
+    }
 
 }

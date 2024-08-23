@@ -1,6 +1,7 @@
 package exceptions;
 
 import java.text.ParseException;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
@@ -52,5 +53,14 @@ public class GlobalExceptionHandler {
 	public static void handleIllegalArgumentException(IllegalArgumentException e) {
 	    System.out.println("Invalid argument provided: " + e.getMessage());
 	}
+	
+	public static void handleDateTimeParseException(DateTimeParseException e) {
+	    System.out.println("Date parsing error: " + e.getMessage());
+	}
+	
+	public static void handleDateFormatException(IllegalArgumentException e) {
+        System.out.println("Invalid date format. Please enter the date in yyyy-mm-dd format.");
+    }
+
 
 }

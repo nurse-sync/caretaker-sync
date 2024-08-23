@@ -96,15 +96,15 @@ public class PresentationDemo {
 			try {
 				System.out.print("Enter your choice: ");
 				int choice = scanner.nextInt();
-				scanner.nextLine();
+				scanner.nextLine(); // Consume newline
 
 				return choice;
 			} catch (InputMismatchException e) {
 				GlobalExceptionHandler.handleInputMismatchException(e);
-				scanner.nextLine();
+				scanner.nextLine(); // Clear the buffer
 			} catch (NoSuchElementException e) {
 				GlobalExceptionHandler.handleNoSuchElementException(e);
-				scanner.nextLine();
+				scanner.nextLine(); // Clear the buffer
 			} catch (Exception e) {
 				GlobalExceptionHandler.handleException(e);
 			}
@@ -125,7 +125,7 @@ public class PresentationDemo {
 	private void userMenu() {
 		while (true) {
 			try {
-				System.out.println("\nUser Menu:");
+				System.out.println("\n--------------User Menu------------");
 				System.out.println("1. Sign In/Sign Up");
 				System.out.println("2. View All Nurse/Caretaker");
 				System.out.println("3. Exit");
@@ -149,6 +149,10 @@ public class PresentationDemo {
 					GlobalExceptionHandler.handleInvalidChoice();
 					break;
 				}
+			} catch (InputMismatchException e) {
+				GlobalExceptionHandler.handleInputMismatchException(e);
+			} catch (NoSuchElementException e) {
+				GlobalExceptionHandler.handleNoSuchElementException(e);
 			} catch (Exception e) {
 				GlobalExceptionHandler.handleException(e);
 			}
@@ -317,90 +321,19 @@ public class PresentationDemo {
 
 	private void handleCaretakerSelection(int userId, CaretakerPreferences preferences) {
 		try {
-//			List<CaretakerPojo> matchingCaretakers = caretakerService.findCaretakersByPreferences(preferences);
+			List<CaretakerPojo> matchingCaretakers = caretakerService.findCaretakersByPreferences(preferences);
 
-//			if (matchingCaretakers.isEmpty()) {
-//				System.out.println("\nNo caretakers found matching your preferences.");
-//			} else {
-//				System.out.println("\n--- Matching Caretakers ---");
-//				for (CaretakerPojo caretaker : matchingCaretakers) {
-//					System.out.println("ID: " + caretaker.getCaretakerId());
-//					System.out.println("Name: " + caretaker.getName());
-//					System.out.println("Gender: " + caretaker.getGender());
-//					System.out.println("Category: " + caretaker.getCategory());
-//					System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
-//					System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
-//					System.out.println("Availability To: " + caretaker.getAvailabilityTo());
-//					System.out.println("Location: " + caretaker.getLocation());
-//					System.out.println("Phone Number: " + caretaker.getPhoneNumber());
-//					System.out.println("Qualifications: " + caretaker.getQualifications());
-//					System.out.println("Live In: " + caretaker.getLiveIn());
-//					System.out.println("Status: " + caretaker.getStatus());
-//					System.out.println("---------------------------------------------------");
-//				}
-//			}
-			sendRequest(userId);
+			if (!matchingCaretakers.isEmpty()) {
+				sendRequest(userId);
+			}
 		} catch (Exception e) {
 			GlobalExceptionHandler.handleException(e); // Handle any unexpected exceptions
 		}
 	}
 
-	private void sendRequest(int userId) {
-		try {
-			System.out.print("Enter the ID of the caretaker you want to send a request to: ");
-			int caretakerId = getUserChoice();
+	
 
-			System.out.print("Enter Service Location: ");
-			String serviceLocation = scanner.nextLine();
-
-			System.out.print("Enter Patient Name: ");
-			String patientName = scanner.nextLine();
-
-			System.out.print("Enter Patient Age: ");
-			int patientAge = getUserChoice();
-
-			System.out.print("Enter Patient Gender: ");
-			String patientGender = scanner.nextLine();
-
-			System.out.print("Enter Start Date (yyyy-mm-dd): ");
-			String startDateStr = scanner.nextLine();
-
-			System.out.print("Enter End Date (yyyy-mm-dd): ");
-			String endDateStr = scanner.nextLine();
-
-			// Convert String dates to java.sql.Date
-			Date startDate = Date.valueOf(startDateStr);
-			Date endDate = Date.valueOf(endDateStr);
-
-			// Check if a request with the same patient name, start date, and end date
-			// already exists
-			if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
-				System.out.println(
-						"A request with the same details has already been sent. Please try with different details.");
-				return;
-			}
-
-			if (requestService == null) {
-				System.out.println("Error: Request service is not initialized.");
-				return;
-			}
-
-			// Send the request
-			boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName,
-					patientAge, patientGender, startDate, endDate);
-
-			if (result) {
-				System.out.println("Request sent successfully!");
-			} else {
-				System.out.println("Failed to send request. Please try again.");
-			}
-
-		} catch (InputMismatchException e) {
-			GlobalExceptionHandler.handleInvalidInput();
-		} catch (Exception e) {
-			GlobalExceptionHandler.handleException(e);
-		}
-	}
+	
 
 	private void createUserAccount() {
 
@@ -434,6 +367,46 @@ public class PresentationDemo {
 			System.out.println("User account creation failed! Username might be taken.");
 		}
 	}
+	
+	private void sendRequest(int userId) {
+	    while (true) {
+	        try {
+	            int caretakerId = InputValidator.getValidatedNumericInput("Enter the ID of the caretaker you want to send a request to: ");
+	            String serviceLocation = InputValidator.promptForDate("Enter Service Location: "); // You might need to adapt this
+	            String patientName = InputValidator.promptForDate("Enter Patient Name: "); // You might need to adapt this
+	            int patientAge = InputValidator.getValidatedNumericInput("Enter Patient Age: ");
+	            String patientGender = InputValidator.promptForDate("Enter Patient Gender: "); // You might need to adapt this
+
+	            String startDateStr = InputValidator.promptForDate("Enter Start Date (yyyy-MM-dd): ");
+	            String endDateStr = InputValidator.promptForDate("Enter End Date (yyyy-MM-dd): ");
+
+	            if (requestService == null) {
+	                System.out.println("Error: Request service is not initialized.");
+	                return;
+	            }
+
+	            if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
+	                System.out.println("A request with the same details has already been sent. Please try with different details.");
+	                continue; 
+	            }
+
+	            Date startDate = Date.valueOf(startDateStr);
+	            Date endDate = Date.valueOf(endDateStr);
+
+	            boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName, patientAge, patientGender, startDate, endDate);
+
+	            if (result) {
+	                System.out.println("Request sent successfully!");
+	                return; 
+	            } else {
+	                System.out.println("Failed to send request. Please try again.");
+	            }
+	        } catch (Exception e) {
+	            GlobalExceptionHandler.handleException(e);
+	        }
+	    }
+	}
+
 
 	private void provideCaretakerPreferences(CaretakerPreferences preferences) {
 		try {
@@ -453,10 +426,8 @@ public class PresentationDemo {
 
 			while (!validInput) {
 				try {
-					String fromDateString = InputValidator.promptAndValidateDate(scanner,
-							"Enter Required From (yyyy-MM-dd): ");
-					String toDateString = InputValidator.promptAndValidateDate(scanner,
-							"Enter Required To (yyyy-MM-dd): ");
+					String fromDateString = InputValidator.promptForDate("Enter Required From (yyyy-MM-dd): ");
+					String toDateString = InputValidator.promptForDate("Enter Required To (yyyy-MM-dd): ");
 
 					requiredFrom = DateUtils.parseSqlDate(fromDateString);
 					requiredTo = DateUtils.parseSqlDate(toDateString);
@@ -473,6 +444,8 @@ public class PresentationDemo {
 				} catch (IllegalArgumentException e) {
 					System.out.println("\nError: " + e.getMessage());
 					System.out.println("Please try again.");
+				} catch (ParseException e) {
+					System.out.println("\nError: Invalid date format. Please use yyyy-MM-dd and try again.");
 				}
 			}
 
@@ -510,14 +483,12 @@ public class PresentationDemo {
 					System.out.println("---------------------------------------------------");
 				}
 			}
-		} catch (ParseException e) {
-			System.out.println(
-					"\nError: An error occurred while parsing dates. Please check the date format and try again.");
-			GlobalExceptionHandler.handleParseException(e);
 		} catch (InputMismatchException e) {
 			GlobalExceptionHandler.handleInputMismatchException(e);
+			scanner.nextLine(); // Clear buffer
 		} catch (NoSuchElementException e) {
 			GlobalExceptionHandler.handleNoSuchElementException(e);
+			scanner.nextLine(); // Clear buffer
 		} catch (Exception e) {
 			GlobalExceptionHandler.handleException(e);
 		}
@@ -613,11 +584,33 @@ public class PresentationDemo {
 			System.out.print("Enter your Weekly Rate: ");
 			double weeklyRate = getUserInputAsDouble();
 
-			System.out.print("Enter Availability From (yyyy-MM-dd): ");
-			Date availabilityFrom = getDateFromUser();
+			Date availabilityFrom = null;
+			Date availabilityTo = null;
 
-			System.out.print("Enter Availability To (yyyy-MM-dd): ");
-			Date availabilityTo = getDateFromUser();
+			while (availabilityFrom == null) {
+				try {
+					String fromDateString = InputValidator.promptForDate("Enter Availability From (yyyy-MM-dd): ");
+					availabilityFrom = DateUtils.parseSqlDate(fromDateString);
+				} catch (ParseException e) {
+					System.out.println("Error: Invalid date format. Please use yyyy-MM-dd.");
+				}
+			}
+
+			while (availabilityTo == null) {
+				try {
+					String toDateString = InputValidator.promptForDate("Enter Availability To (yyyy-MM-dd): ");
+					availabilityTo = DateUtils.parseSqlDate(toDateString);
+
+					if (availabilityFrom != null && !availabilityFrom.before(availabilityTo)) {
+						throw new IllegalArgumentException(
+								"The 'Availability From' date must be before the 'Availability To' date.");
+					}
+				} catch (ParseException e) {
+					System.out.println("Error: Invalid date format. Please use yyyy-MM-dd.");
+				} catch (IllegalArgumentException e) {
+					System.out.println("Error: " + e.getMessage());
+				}
+			}
 
 			System.out.print("Enter your Location: ");
 			String location = scanner.nextLine();
@@ -649,8 +642,6 @@ public class PresentationDemo {
 				System.out.println("Caretaker account creation failed! The username might be taken.");
 			}
 
-		} catch (IllegalArgumentException e) {
-			GlobalExceptionHandler.handleDateParseException(e);
 		} catch (InputMismatchException e) {
 			GlobalExceptionHandler.handleInputMismatchException(e);
 		} catch (NoSuchElementException e) {
@@ -671,16 +662,16 @@ public class PresentationDemo {
 		}
 	}
 
-	private Date getDateFromUser() throws ParseException {
-		while (true) {
-			try {
-				String dateStr = scanner.nextLine();
-				return Date.valueOf(dateStr);
-			} catch (IllegalArgumentException e) {
-				GlobalExceptionHandler.handleDateParseException(e);
-			}
-		}
-	}
+//	private Date getDateFromUser() throws ParseException {
+//		while (true) {
+//			try {
+//				String dateStr = scanner.nextLine();
+//				return Date.valueOf(dateStr);
+//			} catch (IllegalArgumentException e) {
+//				GlobalExceptionHandler.handleDateParseException(e);
+//			}
+//		}
+//	}
 
 	private boolean getUserInputAsBoolean() {
 		while (true) {
@@ -1152,16 +1143,16 @@ public class PresentationDemo {
 
 		if (caretaker != null) {
 			System.out.println("Caretaker Details:");
-			System.out.println("Name: " + caretaker.getName());
-			System.out.println("Gender: " + caretaker.getGender());
-			System.out.println("Category: " + caretaker.getCategory());
-			System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
-			System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
-			System.out.println("Availability To: " + caretaker.getAvailabilityTo());
-			System.out.println("Location: " + caretaker.getLocation());
-			System.out.println("Phone Number: " + caretaker.getPhoneNumber());
-			System.out.println("Qualifications: " + caretaker.getQualifications());
-			System.out.println("Live-In: " + caretaker.getLiveIn());
+			System.out.println("Name              : " + caretaker.getName());
+			System.out.println("Gender            : " + caretaker.getGender());
+			System.out.println("Category          : " + caretaker.getCategory());
+			System.out.println("Weekly Rate       : " + caretaker.getWeeklyRate());
+			System.out.println("Availability From : " + caretaker.getAvailabilityFrom());
+			System.out.println("Availability To   : " + caretaker.getAvailabilityTo());
+			System.out.println("Location          : " + caretaker.getLocation());
+			System.out.println("Phone Number      : " + caretaker.getPhoneNumber());
+			System.out.println("Qualifications    : " + caretaker.getQualifications());
+			System.out.println("Live-In           : " + caretaker.getLiveIn());
 		} else {
 			System.out.println("Caretaker with ID " + caretakerId + " not found.");
 		}
