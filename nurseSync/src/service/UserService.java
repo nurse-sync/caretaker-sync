@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.Date;
 import java.util.List;
 
 import pojo.CaretakerPojo;
@@ -22,5 +23,5 @@ public interface UserService {
 	List<CaretakerPojo> findMatchingCaretakers(CaretakerPreferences preferences);
 
 	boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName,
-			int patientAge, String patientGender);
+			int patientAge, String patientGender, Date startDate, Date endDate);
 }

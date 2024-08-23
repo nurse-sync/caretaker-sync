@@ -1,5 +1,6 @@
 package service;
 
+import java.sql.Date;
 import java.util.List;
 
 import pojo.CaretakerPojo;
@@ -59,12 +60,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName,
-			int patientAge, String patientGender) {
+			int patientAge, String patientGender, Date startDate, Date endDate) {
 		if (caretakerDao.getCaretakerById(caretakerId) != null) {
 			int newRequestId = generateNewRequestId();
 
 			RequestPojo request = new RequestPojo(newRequestId, userId, caretakerId, "Pending", serviceLocation,
-					patientName, patientAge, patientGender);
+					patientName, patientAge, patientGender, startDate, endDate);
 			return requestDao.addRequest(request);
 		}
 		return false;

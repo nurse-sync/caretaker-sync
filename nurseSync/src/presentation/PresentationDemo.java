@@ -227,9 +227,8 @@ public class PresentationDemo {
 				System.out.println("2. List All Caretakers");
 				System.out.println("3. View My Requests Sent");
 				System.out.println("4. Logout");
-//				System.out.print("Enter your choice: ");
 
-				int choice = getUserChoice(); 
+				int choice = getUserChoice();
 				switch (choice) {
 				case 1:
 					CaretakerPreferences preferences = new CaretakerPreferences(null, null, 0, null, null, null, false,
@@ -301,13 +300,13 @@ public class PresentationDemo {
 			} else {
 				System.out.println("\n--- Requests Sent ---");
 				for (RequestPojo request : requests) {
-					System.out.println("Request ID: " + request.getRequestId());
-					System.out.println("Caretaker ID: " + request.getCaretakerId());
-					System.out.println("Service Location: " + request.getServiceLocation());
-					System.out.println("Patient Name: " + request.getPatientName());
-					System.out.println("Patient Age: " + request.getPatientAge());
-					System.out.println("Patient Gender: " + request.getPatientGender());
-					System.out.println("Status: " + request.getStatus());
+					System.out.println("Request ID       : " + request.getRequestId());
+					System.out.println("Caretaker ID     : " + request.getCaretakerId());
+					System.out.println("Service Location : " + request.getServiceLocation());
+					System.out.println("Patient Name     : " + request.getPatientName());
+					System.out.println("Patient Age      : " + request.getPatientAge());
+					System.out.println("Patient Gender   : " + request.getPatientGender());
+					System.out.println("Status           : " + request.getStatus());
 					System.out.println("----------------------------------");
 				}
 			}
@@ -318,28 +317,28 @@ public class PresentationDemo {
 
 	private void handleCaretakerSelection(int userId, CaretakerPreferences preferences) {
 		try {
-			List<CaretakerPojo> matchingCaretakers = caretakerService.findCaretakersByPreferences(preferences);
+//			List<CaretakerPojo> matchingCaretakers = caretakerService.findCaretakersByPreferences(preferences);
 
-			if (matchingCaretakers.isEmpty()) {
-				System.out.println("\nNo caretakers found matching your preferences.");
-			} else {
-				System.out.println("\n--- Matching Caretakers ---");
-				for (CaretakerPojo caretaker : matchingCaretakers) {
-					System.out.println("ID: " + caretaker.getCaretakerId());
-					System.out.println("Name: " + caretaker.getName());
-					System.out.println("Gender: " + caretaker.getGender());
-					System.out.println("Category: " + caretaker.getCategory());
-					System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
-					System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
-					System.out.println("Availability To: " + caretaker.getAvailabilityTo());
-					System.out.println("Location: " + caretaker.getLocation());
-					System.out.println("Phone Number: " + caretaker.getPhoneNumber());
-					System.out.println("Qualifications: " + caretaker.getQualifications());
-					System.out.println("Live In: " + caretaker.getLiveIn());
-					System.out.println("Status: " + caretaker.getStatus());
-					System.out.println("---------------------------------------------------");
-				}
-			}
+//			if (matchingCaretakers.isEmpty()) {
+//				System.out.println("\nNo caretakers found matching your preferences.");
+//			} else {
+//				System.out.println("\n--- Matching Caretakers ---");
+//				for (CaretakerPojo caretaker : matchingCaretakers) {
+//					System.out.println("ID: " + caretaker.getCaretakerId());
+//					System.out.println("Name: " + caretaker.getName());
+//					System.out.println("Gender: " + caretaker.getGender());
+//					System.out.println("Category: " + caretaker.getCategory());
+//					System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
+//					System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+//					System.out.println("Availability To: " + caretaker.getAvailabilityTo());
+//					System.out.println("Location: " + caretaker.getLocation());
+//					System.out.println("Phone Number: " + caretaker.getPhoneNumber());
+//					System.out.println("Qualifications: " + caretaker.getQualifications());
+//					System.out.println("Live In: " + caretaker.getLiveIn());
+//					System.out.println("Status: " + caretaker.getStatus());
+//					System.out.println("---------------------------------------------------");
+//				}
+//			}
 			sendRequest(userId);
 		} catch (Exception e) {
 			GlobalExceptionHandler.handleException(e); // Handle any unexpected exceptions
@@ -347,42 +346,59 @@ public class PresentationDemo {
 	}
 
 	private void sendRequest(int userId) {
-		try {
-			System.out.print("Enter the ID of the caretaker you want to send a request to: ");
-			int caretakerId = getUserChoice();
+	    try {
+	        System.out.print("Enter the ID of the caretaker you want to send a request to: ");
+	        int caretakerId = getUserChoice();
 
-			System.out.print("Enter Service Location: ");
-			String serviceLocation = scanner.nextLine();
+	        System.out.print("Enter Service Location: ");
+	        String serviceLocation = scanner.nextLine();
 
-			System.out.print("Enter Patient Name: ");
-			String patientName = scanner.nextLine();
+	        System.out.print("Enter Patient Name: ");
+	        String patientName = scanner.nextLine();
 
-			System.out.print("Enter Patient Age: ");
-			int patientAge = getUserChoice();
+	        System.out.print("Enter Patient Age: ");
+	        int patientAge = getUserChoice();
 
-			System.out.print("Enter Patient Gender: ");
-			String patientGender = scanner.nextLine();
+	        System.out.print("Enter Patient Gender: ");
+	        String patientGender = scanner.nextLine();
 
-			if (requestService == null) {
-				System.out.println("Error: Request service is not initialized.");
-				return;
-			}
+	        System.out.print("Enter Start Date (yyyy-mm-dd): ");
+	        String startDateStr = scanner.nextLine();
 
-			// Send the request
-			boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName,
-					patientAge, patientGender);
+	        System.out.print("Enter End Date (yyyy-mm-dd): ");
+	        String endDateStr = scanner.nextLine();
 
-			if (result) {
-				System.out.println("Request sent successfully!");
-			} else {
-				System.out.println("Failed to send request. Please try again.");
-			}
+	        // Convert String dates to java.sql.Date
+	        Date startDate = Date.valueOf(startDateStr);
+	        Date endDate = Date.valueOf(endDateStr);
 
-		} catch (InputMismatchException e) {
-			GlobalExceptionHandler.handleInvalidInput();
-		} catch (Exception e) {
-			GlobalExceptionHandler.handleException(e);
-		}
+	        // Check if a request with the same patient name, start date, and end date already exists
+	        if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
+	            System.out.println(
+	                    "A request with the same details has already been sent. Please try with different details.");
+	            return;
+	        }
+
+	        if (requestService == null) {
+	            System.out.println("Error: Request service is not initialized.");
+	            return;
+	        }
+
+	        // Send the request
+	        boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName,
+	                patientAge, patientGender, startDate, endDate);
+
+	        if (result) {
+	            System.out.println("Request sent successfully!");
+	        } else {
+	            System.out.println("Failed to send request. Please try again.");
+	        }
+
+	    } catch (InputMismatchException e) {
+	        GlobalExceptionHandler.handleInvalidInput();
+	    } catch (Exception e) {
+	        GlobalExceptionHandler.handleException(e);
+	    }
 	}
 
 	private void createUserAccount() {
@@ -472,6 +488,7 @@ public class PresentationDemo {
 			List<CaretakerPojo> matchedCaretakers = caretakerService.findCaretakersByPreferences(preferences);
 
 			System.out.println("\n--- Matching Caretakers ---");
+			
 			if (matchedCaretakers.isEmpty()) {
 				System.out.println("No caretakers found matching the given preferences.");
 			} else {
@@ -648,7 +665,7 @@ public class PresentationDemo {
 				return scanner.nextDouble();
 			} catch (InputMismatchException e) {
 				GlobalExceptionHandler.handleInputMismatchException(e);
-				scanner.next(); 
+				scanner.next();
 			}
 		}
 	}
@@ -1026,7 +1043,7 @@ public class PresentationDemo {
 			System.out.print("Enter Caretaker ID to delete: ");
 
 			int caretakerId = scanner.nextInt();
-			scanner.nextLine(); 
+			scanner.nextLine();
 
 			boolean success = caretakerService.deleteCaretaker(caretakerId);
 
