@@ -10,20 +10,18 @@ import dao.CaretakerDao;
 import dao.UserDao;
 import dao.RequestDao;
 
-
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 	private CaretakerDao caretakerDao;
 	private RequestDao requestDao;
 
-	
 	public UserServiceImpl(UserDao userDao) {
 		this.userDao = userDao;
 	}
-	
+
 	@Override
 	public boolean createUser(UserPojo user) {
-        return userDao.addUser(user);
+		return userDao.addUser(user);
 
 	}
 
@@ -34,7 +32,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<UserPojo> getAllUsers() {
-        return userDao.getAllUsers();
+		return userDao.getAllUsers();
 
 	}
 
@@ -45,7 +43,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public boolean deleteUser(int userId) {
-        return userDao.deleteUser(userId);
+		return userDao.deleteUser(userId);
 	}
 
 	@Override
@@ -55,23 +53,25 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public List<CaretakerPojo> findMatchingCaretakers(CaretakerPreferences preferences) {
-        return caretakerDao.findCaretakersByPreferences(preferences);
+		return caretakerDao.findCaretakersByPreferences(preferences);
 
 	}
-	
-	 @Override
-	 public boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName, int patientAge, String patientGender) {
-	        if (caretakerDao.getCaretakerById(caretakerId) != null) {
-	            int newRequestId = generateNewRequestId(); 
-	            
-	            RequestPojo request = new RequestPojo(newRequestId, userId, caretakerId, "Pending", serviceLocation, patientName, patientAge, patientGender);
-	            return requestDao.addRequest(request);
-	        }
-	        return false;
-	 }
-	 
-	 private int generateNewRequestId() {
-	        int maxRequestId = requestDao.getMaxRequestId();
-	        return maxRequestId + 1;
-	    }
+
+	@Override
+	public boolean sendRequestToCaretaker(int userId, int caretakerId, String serviceLocation, String patientName,
+			int patientAge, String patientGender) {
+		if (caretakerDao.getCaretakerById(caretakerId) != null) {
+			int newRequestId = generateNewRequestId();
+
+			RequestPojo request = new RequestPojo(newRequestId, userId, caretakerId, "Pending", serviceLocation,
+					patientName, patientAge, patientGender);
+			return requestDao.addRequest(request);
+		}
+		return false;
+	}
+
+	private int generateNewRequestId() {
+		int maxRequestId = requestDao.getMaxRequestId();
+		return maxRequestId + 1;
+	}
 }

@@ -6,13 +6,20 @@ import pojo.RequestPojo;
 
 public interface RequestDao {
 	boolean addRequest(RequestPojo request);
+
 	RequestPojo getRequestById(int requestId);
-    boolean updateRequest(RequestPojo request);
-    List<RequestPojo> getAllRequestsByCaretakerId(int caretakerId);
-    int getMaxRequestId();
-    RequestPojo findById(int requestId);
-    boolean updateRequestStatus(int requestId, String status);
-    int getNextRequestId();
-    List<RequestPojo> getRequestsByUserId(int userId);
-//    boolean saveRequest(RequestPojo request);
+
+	boolean updateRequest(RequestPojo request);
+
+	List<RequestPojo> getAllRequestsByCaretakerId(int caretakerId);
+
+	int getMaxRequestId();
+
+	RequestPojo findById(int requestId);
+
+	boolean updateRequestStatus(int requestId, String status);
+
+	int getNextRequestId();
+
+	List<RequestPojo> getRequestsByUserId(int userId);
 }

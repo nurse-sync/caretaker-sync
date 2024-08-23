@@ -2,24 +2,25 @@ package pojo;
 
 public class RequestPojo {
 	private int requestId;
-    private int userId;
-    private int caretakerId;
-    private String status; // e.g., "Pending", "Accepted", "Rejected"
-    private String serviceLocation;
-    private String patientName;
-    private int patientAge;
-    private String patientGender;
-    
-    public RequestPojo(int requestId, int userId, int caretakerId, String status, String serviceLocation, String patientName, int patientAge, String patientGender) {
-        this.requestId = requestId;
-        this.userId = userId;
-        this.caretakerId = caretakerId;
-        this.status = status;
-        this.serviceLocation = serviceLocation;
-        this.patientName = patientName;
-        this.patientAge = patientAge;
-        this.patientGender = patientGender; 
-    }
+	private int userId;
+	private int caretakerId;
+	private String status; // e.g., "Pending", "Accepted", "Rejected"
+	private String serviceLocation;
+	private String patientName;
+	private int patientAge;
+	private String patientGender;
+
+	public RequestPojo(int requestId, int userId, int caretakerId, String status, String serviceLocation,
+			String patientName, int patientAge, String patientGender) {
+		this.requestId = requestId;
+		this.userId = userId;
+		this.caretakerId = caretakerId;
+		this.status = status;
+		this.serviceLocation = serviceLocation;
+		this.patientName = patientName;
+		this.patientAge = patientAge;
+		this.patientGender = patientGender;
+	}
 
 	public int getRequestId() {
 		return requestId;

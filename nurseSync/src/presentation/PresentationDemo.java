@@ -227,10 +227,9 @@ public class PresentationDemo {
 				System.out.println("2. List All Caretakers");
 				System.out.println("3. View My Requests Sent");
 				System.out.println("4. Logout");
-				System.out.print("Enter your choice: ");
+//				System.out.print("Enter your choice: ");
 
-				int choice = getUserChoice(); // Using a common method for getting user choice
-
+				int choice = getUserChoice(); 
 				switch (choice) {
 				case 1:
 					CaretakerPreferences preferences = new CaretakerPreferences(null, null, 0, null, null, null, false,
@@ -514,7 +513,7 @@ public class PresentationDemo {
 				System.out.println("2. New User? Sign Up");
 				System.out.println("3. Exit");
 				System.out.println("-----------------------------------------------");
-				System.out.print("Enter your choice: ");
+//				System.out.print("Enter your choice: ");
 
 				int choice = getUserChoice();
 
@@ -649,7 +648,7 @@ public class PresentationDemo {
 				return scanner.nextDouble();
 			} catch (InputMismatchException e) {
 				GlobalExceptionHandler.handleInputMismatchException(e);
-				scanner.next(); // Clear invalid input
+				scanner.next(); 
 			}
 		}
 	}
@@ -805,9 +804,9 @@ public class PresentationDemo {
 
 	private void adminMenu() {
 		try {
-			System.out.println("\n==============================");
-			System.out.println("         Admin Menu");
-			System.out.println("==============================");
+			System.out.println("\n===========================================");
+			System.out.println("                 Admin Menu");
+			System.out.println("=============================================");
 			System.out.println("1. Sign In");
 			System.out.println("2. Exit");
 			System.out.println();
@@ -917,269 +916,266 @@ public class PresentationDemo {
 	}
 
 	private void manageCaretakers() {
-	    boolean exit = false;
+		boolean exit = false;
 
-	    while (!exit) {
-	        try {
-	            System.out.println("\n==============================");
-	            System.out.println("    Caretaker Management Menu   ");
-	            System.out.println("==============================");
-	            System.out.println("1. List All Caretakers");
-	            System.out.println("2. Get Caretaker by ID");
-	            System.out.println("3. Remove Caretaker");
-	            System.out.println("4. Exit");
-	            System.out.println("------------------------------");
-	            System.out.print("Please enter your choice: ");
+		while (!exit) {
+			try {
+				System.out.println("\n===========================================");
+				System.out.println("          Caretaker Management Menu   ");
+				System.out.println("=============================================");
+				System.out.println("1. List All Caretakers");
+				System.out.println("2. Get Caretaker by ID");
+				System.out.println("3. Remove Caretaker");
+				System.out.println("4. Exit");
+				System.out.println("------------------------------");
+				System.out.print("Please enter your choice: ");
 
-	            int choice = scanner.nextInt();
-	            scanner.nextLine(); 
+				int choice = scanner.nextInt();
+				scanner.nextLine();
 
-	            switch (choice) {
-	                case 1:
-	                    System.out.println("\n--- Listing All Caretakers ---");
-	                    listAllCaretakers();
-	                    break;
-	                case 2:
-	                    System.out.println("\n--- Retrieving Caretaker by ID ---");
-	                    retrieveCaretakerById();
-	                    break;
-	                case 3:
-	                    System.out.println("\n--- Removing Caretaker ---");
-	                    deleteCaretakerAccount();
-	                    break;
-	                case 4:
-	                    exit = true;
-	                    System.out.println("\nExiting Caretaker Management. Have a great day!");
-	                    break;
-	                default:
-	                    System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
-	                    break;
-	            }
-	        } catch (InputMismatchException e) {
-	            System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
-	            scanner.nextLine(); 
-	        } catch (NoSuchElementException e) {
-	            // Handle cases where expected input is missing
-	            System.out.println("\n[ERROR] No input received. Please try again.");
-	        } catch (Exception e) {
-	            GlobalExceptionHandler.handleException(e);
-	        }
-	    }
+				switch (choice) {
+				case 1:
+					System.out.println("\n--- Listing All Caretakers ---");
+					listAllCaretakers();
+					break;
+				case 2:
+					System.out.println("\n--- Retrieving Caretaker by ID ---");
+					retrieveCaretakerById();
+					break;
+				case 3:
+					System.out.println("\n--- Removing Caretaker ---");
+					deleteCaretakerAccount();
+					break;
+				case 4:
+					exit = true;
+					System.out.println("\nExiting Caretaker Management. Have a great day!");
+					break;
+				default:
+					System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
+				scanner.nextLine();
+			} catch (NoSuchElementException e) {
+				// Handle cases where expected input is missing
+				System.out.println("\n[ERROR] No input received. Please try again.");
+			} catch (Exception e) {
+				GlobalExceptionHandler.handleException(e);
+			}
+		}
 	}
 
 	private void retrieveCaretakerById() {
-	    try {
-	        System.out.print("\nPlease enter the Caretaker ID you want to retrieve: ");
-	        int caretakerId = scanner.nextInt();
-	        scanner.nextLine();
+		try {
+			System.out.print("\nPlease enter the Caretaker ID you want to retrieve: ");
+			int caretakerId = scanner.nextInt();
+			scanner.nextLine();
 
-	        CaretakerPojo caretaker = findCaretakerById(caretakerId);
+			CaretakerPojo caretaker = findCaretakerById(caretakerId);
 
-	        if (caretaker != null) {
-	            // Display caretaker details
-	            System.out.println("\n====================================");
-	            System.out.println("         Caretaker Details          ");
-	            System.out.println("====================================");
-	            System.out.println("ID               : " + caretaker.getCaretakerId());
-	            System.out.println("Name             : " + caretaker.getName());
-	            System.out.println("Username         : " + caretaker.getUserName());
-	            System.out.println("Gender           : " + caretaker.getGender());
-	            System.out.println("Category         : " + caretaker.getCategory());
-	            System.out.println("Weekly Rate      : " + caretaker.getWeeklyRate());
-	            System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
-	            System.out.println("Availability To  : " + caretaker.getAvailabilityTo());
-	            System.out.println("Location         : " + caretaker.getLocation());
-	            System.out.println("Phone Number     : " + caretaker.getPhoneNumber());
-	            System.out.println("Qualifications   : " + caretaker.getQualifications());
-	            System.out.println("Live-In          : " + caretaker.getLiveIn());
-	            System.out.println("Status           : " + caretaker.getStatus());
-	            System.out.println("====================================\n");
-	        } else {
-	            System.out.println("\n[ERROR] Caretaker with ID " + caretakerId + " not found.\n");
-	        }
-	    } catch (InputMismatchException e) {
-	        System.out.println("\n[ERROR] Invalid input. Please enter a valid number for the Caretaker ID.\n");
-	        scanner.nextLine(); 
-	    } catch (NoSuchElementException e) {
-	        System.out.println("\n[ERROR] No input received. Please try again.\n");
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+			if (caretaker != null) {
+				// Display caretaker details
+				System.out.println("\n===========================================");
+				System.out.println("              Caretaker Details          ");
+				System.out.println("=============================================");
+				System.out.println("ID               : " + caretaker.getCaretakerId());
+				System.out.println("Name             : " + caretaker.getName());
+				System.out.println("Username         : " + caretaker.getUserName());
+				System.out.println("Gender           : " + caretaker.getGender());
+				System.out.println("Category         : " + caretaker.getCategory());
+				System.out.println("Weekly Rate      : " + caretaker.getWeeklyRate());
+				System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+				System.out.println("Availability To  : " + caretaker.getAvailabilityTo());
+				System.out.println("Location         : " + caretaker.getLocation());
+				System.out.println("Phone Number     : " + caretaker.getPhoneNumber());
+				System.out.println("Qualifications   : " + caretaker.getQualifications());
+				System.out.println("Live-In          : " + caretaker.getLiveIn());
+				System.out.println("Status           : " + caretaker.getStatus());
+				System.out.println("=============================================");
+			} else {
+				System.out.println("\n[ERROR] Caretaker with ID " + caretakerId + " not found.\n");
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("\n[ERROR] Invalid input. Please enter a valid number for the Caretaker ID.\n");
+			scanner.nextLine();
+		} catch (NoSuchElementException e) {
+			System.out.println("\n[ERROR] No input received. Please try again.\n");
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private CaretakerPojo findCaretakerById(int caretakerId) {
-	    try {
-	        for (CaretakerPojo caretaker : caretakerList) {
-	            if (caretaker.getCaretakerId() == caretakerId) {
-	                return caretaker;
-	            }
-	        }
-	        System.out.println("\n[INFO] No caretaker found with ID: " + caretakerId + ".\n");
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
-	    return null;
+		try {
+			for (CaretakerPojo caretaker : caretakerList) {
+				if (caretaker.getCaretakerId() == caretakerId) {
+					return caretaker;
+				}
+			}
+			System.out.println("\n[INFO] No caretaker found with ID: " + caretakerId + ".\n");
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
+		return null;
 	}
 
 	private void deleteCaretakerAccount() {
-	    try {
-	        System.out.println("\n=== Delete Caretaker Account ===");
-	        System.out.print("Enter Caretaker ID to delete: ");
-	        
-	        int caretakerId = scanner.nextInt();
-	        scanner.nextLine(); // Consume newline
-	        
-	        boolean success = caretakerService.deleteCaretaker(caretakerId);
-	        
-	        if (success) {
-	            System.out.println("\n>>> Caretaker account deleted successfully.");
-	        } else {
-	            System.out.println("\n>>> Failed to delete caretaker account. Caretaker ID not found.");
-	        }
-	    } catch (InputMismatchException e) {
-	        GlobalExceptionHandler.handleInputMismatchException(e);
-	    } catch (NoSuchElementException e) {
-	        GlobalExceptionHandler.handleNoSuchElementException(e);
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+		try {
+			System.out.println("\n=== Delete Caretaker Account ===");
+			System.out.print("Enter Caretaker ID to delete: ");
+
+			int caretakerId = scanner.nextInt();
+			scanner.nextLine(); 
+
+			boolean success = caretakerService.deleteCaretaker(caretakerId);
+
+			if (success) {
+				System.out.println("\n>>> Caretaker account deleted successfully.");
+			} else {
+				System.out.println("\n>>> Failed to delete caretaker account. Caretaker ID not found.");
+			}
+		} catch (InputMismatchException e) {
+			GlobalExceptionHandler.handleInputMismatchException(e);
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private void manageUsers() {
-	    boolean exit = false;
+		boolean exit = false;
 
-	    while (!exit) {
-	        try {
-	            System.out.println("\n=============================");
-	            System.out.println("       User Management Menu    ");
-	            System.out.println("=============================");
-	            System.out.println("1. List All Users");
-	            System.out.println("2. Get User by ID");
-	            System.out.println("3. Remove User");
-	            System.out.println("4. Exit");
-	            System.out.println("-----------------------------");
-	            System.out.print("Please enter your choice: ");
+		while (!exit) {
+			try {
+				System.out.println("\n===========================================");
+				System.out.println("             User Management Menu    ");
+				System.out.println("=============================================");
+				System.out.println("1. List All Users");
+				System.out.println("2. Get User by ID");
+				System.out.println("3. Remove User");
+				System.out.println("4. Exit");
+				System.out.println("----------------------------------------------");
+				System.out.print("Please enter your choice: ");
 
-	            int choice = scanner.nextInt();
-	            scanner.nextLine(); 
+				int choice = scanner.nextInt();
+				scanner.nextLine();
 
-	            switch (choice) {
-	                case 1:
-	                    System.out.println("\n--- Listing All Users ---");
-	                    displayAllUsers();
-	                    break;
-	                case 2:
-	                    System.out.println("\n--- Retrieving User by ID ---");
-	                    retrieveUserById();
-	                    break;
-	                case 3:
-	                    System.out.println("\n--- Removing User ---");
-	                    deleteUserWithId();
-	                    break;
-	                case 4:
-	                    exit = true;
-	                    System.out.println("\nExiting User Management. Have a great day!");
-	                    break;
-	                default:
-	                    System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
-	                    break;
-	            }
-	        } catch (InputMismatchException e) {
-	            System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
-	            scanner.nextLine(); 
-	        } catch (NoSuchElementException e) {
-	            System.out.println("\n[ERROR] No input received. Please try again.");
-	        } catch (Exception e) {
-	            GlobalExceptionHandler.handleException(e);
-	        }
-	    }
+				switch (choice) {
+				case 1:
+					System.out.println("\n------------- Listing All Users --------------");
+					displayAllUsers();
+					break;
+				case 2:
+					System.out.println("\n------------ Retrieving User by ID ------------");
+					retrieveUserById();
+					break;
+				case 3:
+					System.out.println("\n--------------- Removing User -----------------");
+					deleteUserWithId();
+					break;
+				case 4:
+					exit = true;
+					System.out.println("\nExiting User Management. Have a great day!");
+					break;
+				default:
+					System.out.println("\n[ERROR] Invalid choice. Please enter a number between 1 and 4.");
+					break;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("\n[ERROR] Invalid input. Please enter a valid number.");
+				scanner.nextLine();
+			} catch (NoSuchElementException e) {
+				System.out.println("\n[ERROR] No input received. Please try again.");
+			} catch (Exception e) {
+				GlobalExceptionHandler.handleException(e);
+			}
+		}
 	}
 
 	private void displayAllUsers() {
-	    System.out.println("\n===============================");
-	    System.out.println("      List of All Users");
-	    System.out.println("===============================");
+		System.out.println("\n===========================================");
+		System.out.println("            List of All Users");
+		System.out.println("=============================================");
 
-	    try {
-	        // Call the service method to get all users
-	        List<UserPojo> users = userService.getAllUsers();
+		try {
+			List<UserPojo> users = userService.getAllUsers();
 
-	        // Check if the list is empty
-	        if (users.isEmpty()) {
-	            System.out.println("No users found.");
-	        } else {
-	            // Loop through the list of users and display their details
-	            for (UserPojo user : users) {
-	                System.out.println("\n--- User Details ---");
-	                System.out.println("User ID        : " + user.getUserId());
-	                System.out.println("Name           : " + user.getName());
-	                System.out.println("Username       : " + user.getUsername());
-	                System.out.println("Email          : " + user.getEmail());
-	                System.out.println("Phone Number   : " + user.getPhoneNumber());
-	                System.out.println("Address        : " + user.getAddress());
-	                System.out.println("-------------------------");
-	            }
-	        }
-	    } catch (Exception e) {
-	        System.out.println("\n[ERROR] An unexpected error occurred while retrieving the users.");
-	        GlobalExceptionHandler.handleException(e);
-	    }
+			if (users.isEmpty()) {
+				System.out.println("No users found.");
+			} else {
+				// Loop through the list of users and display their details
+				for (UserPojo user : users) {
+					System.out.println("\n--------------- User Details ---------------");
+					System.out.println("User ID        : " + user.getUserId());
+					System.out.println("Name           : " + user.getName());
+					System.out.println("Username       : " + user.getUsername());
+					System.out.println("Email          : " + user.getEmail());
+					System.out.println("Phone Number   : " + user.getPhoneNumber());
+					System.out.println("Address        : " + user.getAddress());
+					System.out.println("----------------------------------------------");
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("\n[ERROR] An unexpected error occurred while retrieving the users.");
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private void retrieveUserById() {
-        System.out.println("View Caretaker Account");
+		System.out.println("View Caretaker Account");
 
-        System.out.print("Enter Caretaker ID to view: ");
-        int caretakerId = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+		System.out.print("Enter Caretaker ID to view: ");
+		int caretakerId = scanner.nextInt();
+		scanner.nextLine(); // Consume newline
 
-        CaretakerPojo caretaker = caretakerService.getCaretakerById(caretakerId);
-        
-  if (caretaker != null) {
-            System.out.println("Caretaker Details:");
-            System.out.println("Name: " + caretaker.getName());
-            System.out.println("Gender: " + caretaker.getGender());
-            System.out.println("Category: " + caretaker.getCategory());
-            System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
-            System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
-            System.out.println("Availability To: " + caretaker.getAvailabilityTo());
-            System.out.println("Location: " + caretaker.getLocation());
-            System.out.println("Phone Number: " + caretaker.getPhoneNumber());
-            System.out.println("Qualifications: " + caretaker.getQualifications());
-            System.out.println("Live-In: " + caretaker.getLiveIn());
-        } else {
-            System.out.println("Caretaker with ID " + caretakerId + " not found.");
-        }
-    }
-	
-	private void deleteUserWithId() {
-	    System.out.println("\n==============================");
-	    System.out.println("    Delete User Account");
-	    System.out.println("==============================");
+		CaretakerPojo caretaker = caretakerService.getCaretakerById(caretakerId);
 
-	    try {
-	        System.out.print("Enter User ID to delete: ");
-	        int userId = scanner.nextInt();
-	        scanner.nextLine(); // Consume newline
-
-	        boolean success = userService.deleteUser(userId);
-
-	        if (success) {
-	            System.out.println("\n[INFO] User account deleted successfully.");
-	        } else {
-	            System.out.println("\n[INFO] User with ID " + userId + " not found.");
-	        }
-	    } catch (InputMismatchException e) {
-	        // Handle invalid input
-	        System.out.println("\n[ERROR] Invalid input. Please enter a valid numeric ID.");
-	        scanner.nextLine(); 
-	    } catch (Exception e) {
-	        System.out.println("\n[ERROR] An unexpected error occurred while deleting the user account.");
-	        GlobalExceptionHandler.handleException(e);
-	    }
+		if (caretaker != null) {
+			System.out.println("Caretaker Details:");
+			System.out.println("Name: " + caretaker.getName());
+			System.out.println("Gender: " + caretaker.getGender());
+			System.out.println("Category: " + caretaker.getCategory());
+			System.out.println("Weekly Rate: " + caretaker.getWeeklyRate());
+			System.out.println("Availability From: " + caretaker.getAvailabilityFrom());
+			System.out.println("Availability To: " + caretaker.getAvailabilityTo());
+			System.out.println("Location: " + caretaker.getLocation());
+			System.out.println("Phone Number: " + caretaker.getPhoneNumber());
+			System.out.println("Qualifications: " + caretaker.getQualifications());
+			System.out.println("Live-In: " + caretaker.getLiveIn());
+		} else {
+			System.out.println("Caretaker with ID " + caretakerId + " not found.");
+		}
 	}
 
-	
+	private void deleteUserWithId() {
+		System.out.println("\n===========================================");
+		System.out.println("            Delete User Account");
+		System.out.println("=============================================");
+
+		try {
+			System.out.print("Enter User ID to delete: ");
+			int userId = scanner.nextInt();
+			scanner.nextLine(); // Consume newline
+
+			boolean success = userService.deleteUser(userId);
+
+			if (success) {
+				System.out.println("\n[INFO] User account deleted successfully.");
+			} else {
+				System.out.println("\n[INFO] User with ID " + userId + " not found.");
+			}
+		} catch (InputMismatchException e) {
+			// Handle invalid input
+			System.out.println("\n[ERROR] Invalid input. Please enter a valid numeric ID.");
+			scanner.nextLine();
+		} catch (Exception e) {
+			System.out.println("\n[ERROR] An unexpected error occurred while deleting the user account.");
+			GlobalExceptionHandler.handleException(e);
+		}
+	}
+
 	private void viewReports() {
 	}
 

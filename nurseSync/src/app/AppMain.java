@@ -15,24 +15,25 @@ import service.CaretakerServiceImpl;
 import service.RequestService;
 import service.RequestServiceImpl;
 
-
 public class AppMain {
-	
-	    private static UserService userService = new UserServiceImpl(new UserDaoCollectionImpl()); 
-	    private static AdminService adminService = new AdminServiceImpl(new AdminDaoCollectionImpl()); 
-	    private static CaretakerService caretakerService = new CaretakerServiceImpl(new CaretakerDaoCollectionImpl()); 
-	    private static RequestService requestService = new RequestServiceImpl(new RequestDaoCollectionImpl()); // Initialize RequestService
 
-	    public static void main(String[] args) {
-	        PresentationDemo presentation = new PresentationDemo(userService, caretakerService, adminService, requestService); // Pass RequestService
-	   
-	        DummyDataInitializer dummyDataInitializer = new DummyDataInitializer(userService, caretakerService, adminService);
-	        dummyDataInitializer.initializeData(); 
-	        
-	        System.out.println("Dummy data initialized.");
+	private static UserService userService = new UserServiceImpl(new UserDaoCollectionImpl());
+	private static AdminService adminService = new AdminServiceImpl(new AdminDaoCollectionImpl());
+	private static CaretakerService caretakerService = new CaretakerServiceImpl(new CaretakerDaoCollectionImpl());
+	private static RequestService requestService = new RequestServiceImpl(new RequestDaoCollectionImpl()); // Initialize
+																											// RequestService
 
-	        presentation.start();
-	   
-	   }
+	public static void main(String[] args) {
+		PresentationDemo presentation = new PresentationDemo(userService, caretakerService, adminService,
+				requestService); // Pass RequestService
+
+		DummyDataInitializer dummyDataInitializer = new DummyDataInitializer(userService, caretakerService,
+				adminService);
+		dummyDataInitializer.initializeData();
+
+		System.out.println("Dummy data initialized.");
+
+		presentation.start();
+
+	}
 }
-

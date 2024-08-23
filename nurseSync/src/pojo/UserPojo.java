@@ -22,7 +22,7 @@ public class UserPojo {
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.address = address;
-		this.sentRequests = new ArrayList<>(); // Initialize the list
+		this.sentRequests = new ArrayList<>(); 
 	}
 
 	public int getUserId() {

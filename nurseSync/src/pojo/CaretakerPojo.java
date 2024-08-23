@@ -5,41 +5,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CaretakerPojo {
-   	private int caretakerId;
-    private String name;
-    private String userName;
-    private String password;
-    private String gender; // e.g., Male, Female, Others
-    private String category; // e.g., Nurse, Caretaker
-    private double weeklyRate; // weekly rate for the services provided
-    private Date availabilityFrom; // When the caretaker is available from
-    private Date availabilityTo; // When the caretaker is available until
-    private String location; // Location where the carretaker is available
-    private String phoneNumber; // Contact number of the caretaker
-    private String qualifications; // Qualifications or experience details
-    private boolean liveIn; // Whether the caretaker is willing to live in
-    private String status; // New field: e.g., "Available", "Booked"
-    private List<RequestPojo> requests; // List to store requests
-    
-    public CaretakerPojo(int caretakerId, String name, String userName, String password, String gender, String category, double weeklyRate, 
-    		Date availabilityFrom, Date availabilityTo, String location, 
-            String phoneNumber, String qualifications, boolean liveIn, String status) {
-		 this.caretakerId = caretakerId;
-		 this.name = name;
-		 this.userName = userName;
-		 this.password = password;
-		 this.gender = gender;
-		 this.category = category;
-		 this.weeklyRate = weeklyRate;
-		 this.availabilityFrom = availabilityFrom;
-		 this.availabilityTo = availabilityTo;
-		 this.location = location;
-		 this.phoneNumber = phoneNumber;
-		 this.qualifications = qualifications;
-		 this.liveIn = liveIn;
-		 this.status = status;
-		 this.requests = new ArrayList<>();
-    }
+	private int caretakerId;
+	private String name;
+	private String userName;
+	private String password;
+	private String gender; //  Male, Female, Others
+	private String category; // e.g., Nurse, Caretaker
+	private double weeklyRate; // weekly rate for the services provided
+	private Date availabilityFrom; // When the caretaker is available from
+	private Date availabilityTo; // When the caretaker is available until
+	private String location; // Location where the carretaker is available
+	private String phoneNumber; // Contact number of the caretaker
+	private String qualifications; // Qualifications or experience details
+	private boolean liveIn; // Whether the caretaker is willing to live in
+	private String status; // New field: e.g., "Available", "Booked"
+	private List<RequestPojo> requests; // List to store requests
+
+	public CaretakerPojo(int caretakerId, String name, String userName, String password, String gender, String category,
+			double weeklyRate, Date availabilityFrom, Date availabilityTo, String location, String phoneNumber,
+			String qualifications, boolean liveIn, String status) {
+		this.caretakerId = caretakerId;
+		this.name = name;
+		this.userName = userName;
+		this.password = password;
+		this.gender = gender;
+		this.category = category;
+		this.weeklyRate = weeklyRate;
+		this.availabilityFrom = availabilityFrom;
+		this.availabilityTo = availabilityTo;
+		this.location = location;
+		this.phoneNumber = phoneNumber;
+		this.qualifications = qualifications;
+		this.liveIn = liveIn;
+		this.status = status;
+		this.requests = new ArrayList<>();
+	}
 
 	public int getCaretakerId() {
 		return caretakerId;
