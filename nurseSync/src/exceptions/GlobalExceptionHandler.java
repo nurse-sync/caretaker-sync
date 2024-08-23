@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 
 public class GlobalExceptionHandler {
 
-	// Handle general exceptions
 	public static void handleException(Exception e) {
 		System.out.println("Oops! Something went wrong. Please try again.");
 		e.printStackTrace();
@@ -21,9 +20,8 @@ public class GlobalExceptionHandler {
 	}
 
 	public static void handleNoSuchElementException(NoSuchElementException e) {
-		System.out.println(
-				"It seems there was an issue with the input. Please make sure to provide the required information.");
-	}
+        System.out.println("Requested data not found. Please check the provided ID or username and try again.");
+    }
 
 	public static void handleInvalidChoice() {
 		System.out.println("Invalid choice. Please select a valid option from the menu.");
@@ -50,4 +48,9 @@ public class GlobalExceptionHandler {
 				.println("\nError: An error occurred while parsing dates. Please check the date format and try again.");
 		e.printStackTrace();
 	}
+	
+	public static void handleIllegalArgumentException(IllegalArgumentException e) {
+	    System.out.println("Invalid argument provided: " + e.getMessage());
+	}
+
 }

@@ -226,7 +226,7 @@ public class PresentationDemo {
 				System.out.println("1. Search Caretaker / Nurse with Preference");
 				System.out.println("2. List All Caretakers");
 				System.out.println("3. View My Requests Sent");
-				System.out.println("4. Logout");
+				System.out.println("4. Exit");
 
 				int choice = getUserChoice();
 				switch (choice) {
@@ -346,59 +346,60 @@ public class PresentationDemo {
 	}
 
 	private void sendRequest(int userId) {
-	    try {
-	        System.out.print("Enter the ID of the caretaker you want to send a request to: ");
-	        int caretakerId = getUserChoice();
+		try {
+			System.out.print("Enter the ID of the caretaker you want to send a request to: ");
+			int caretakerId = getUserChoice();
 
-	        System.out.print("Enter Service Location: ");
-	        String serviceLocation = scanner.nextLine();
+			System.out.print("Enter Service Location: ");
+			String serviceLocation = scanner.nextLine();
 
-	        System.out.print("Enter Patient Name: ");
-	        String patientName = scanner.nextLine();
+			System.out.print("Enter Patient Name: ");
+			String patientName = scanner.nextLine();
 
-	        System.out.print("Enter Patient Age: ");
-	        int patientAge = getUserChoice();
+			System.out.print("Enter Patient Age: ");
+			int patientAge = getUserChoice();
 
-	        System.out.print("Enter Patient Gender: ");
-	        String patientGender = scanner.nextLine();
+			System.out.print("Enter Patient Gender: ");
+			String patientGender = scanner.nextLine();
 
-	        System.out.print("Enter Start Date (yyyy-mm-dd): ");
-	        String startDateStr = scanner.nextLine();
+			System.out.print("Enter Start Date (yyyy-mm-dd): ");
+			String startDateStr = scanner.nextLine();
 
-	        System.out.print("Enter End Date (yyyy-mm-dd): ");
-	        String endDateStr = scanner.nextLine();
+			System.out.print("Enter End Date (yyyy-mm-dd): ");
+			String endDateStr = scanner.nextLine();
 
-	        // Convert String dates to java.sql.Date
-	        Date startDate = Date.valueOf(startDateStr);
-	        Date endDate = Date.valueOf(endDateStr);
+			// Convert String dates to java.sql.Date
+			Date startDate = Date.valueOf(startDateStr);
+			Date endDate = Date.valueOf(endDateStr);
 
-	        // Check if a request with the same patient name, start date, and end date already exists
-	        if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
-	            System.out.println(
-	                    "A request with the same details has already been sent. Please try with different details.");
-	            return;
-	        }
+			// Check if a request with the same patient name, start date, and end date
+			// already exists
+			if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
+				System.out.println(
+						"A request with the same details has already been sent. Please try with different details.");
+				return;
+			}
 
-	        if (requestService == null) {
-	            System.out.println("Error: Request service is not initialized.");
-	            return;
-	        }
+			if (requestService == null) {
+				System.out.println("Error: Request service is not initialized.");
+				return;
+			}
 
-	        // Send the request
-	        boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName,
-	                patientAge, patientGender, startDate, endDate);
+			// Send the request
+			boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName,
+					patientAge, patientGender, startDate, endDate);
 
-	        if (result) {
-	            System.out.println("Request sent successfully!");
-	        } else {
-	            System.out.println("Failed to send request. Please try again.");
-	        }
+			if (result) {
+				System.out.println("Request sent successfully!");
+			} else {
+				System.out.println("Failed to send request. Please try again.");
+			}
 
-	    } catch (InputMismatchException e) {
-	        GlobalExceptionHandler.handleInvalidInput();
-	    } catch (Exception e) {
-	        GlobalExceptionHandler.handleException(e);
-	    }
+		} catch (InputMismatchException e) {
+			GlobalExceptionHandler.handleInvalidInput();
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+		}
 	}
 
 	private void createUserAccount() {
@@ -488,7 +489,7 @@ public class PresentationDemo {
 			List<CaretakerPojo> matchedCaretakers = caretakerService.findCaretakersByPreferences(preferences);
 
 			System.out.println("\n--- Matching Caretakers ---");
-			
+
 			if (matchedCaretakers.isEmpty()) {
 				System.out.println("No caretakers found matching the given preferences.");
 			} else {
@@ -891,7 +892,7 @@ public class PresentationDemo {
 				System.out.println("1. Manage Caretakers");
 				System.out.println("2. Manage Users");
 				System.out.println("3. View Reports");
-				System.out.println("4. Logout");
+				System.out.println("4. Exit");
 				System.out.println("-------------------");
 				System.out.print("Enter your choice: ");
 

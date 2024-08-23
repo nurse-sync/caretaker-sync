@@ -1,6 +1,8 @@
 package service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import dao.CaretakerDao;
 //import dao.CaretakerDaoCollectionImpl;
@@ -8,16 +10,12 @@ import pojo.CaretakerPojo;
 import pojo.CaretakerPreferences;
 import pojo.RequestPojo;
 import dao.RequestDao;
+import exceptions.GlobalExceptionHandler;
 
 public class CaretakerServiceImpl implements CaretakerService {
 
 	private CaretakerDao caretakerDao;
 	private RequestDao requestDao;
-
-//    public CaretakerServiceImpl(CaretakerDao caretakerDao, RequestDao requestDao) {
-//        this.caretakerDao = caretakerDao;
-//        this.requestDao = requestDao;
-//    }
 
 	public CaretakerServiceImpl(CaretakerDao caretakerDao) {
 		this.caretakerDao = caretakerDao;
@@ -25,63 +23,128 @@ public class CaretakerServiceImpl implements CaretakerService {
 
 	@Override
 	public boolean createCaretaker(CaretakerPojo caretaker) {
-		return caretakerDao.addCaretaker(caretaker);
+		try {
+			return caretakerDao.addCaretaker(caretaker);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false; // failure
+		}
 	}
 
 	@Override
 	public CaretakerPojo getCaretakerById(int caretakerId) {
-		return caretakerDao.getCaretakerById(caretakerId);
+		try {
+			CaretakerPojo caretaker = caretakerDao.getCaretakerById(caretakerId);
+			if (caretaker == null) {
+				throw new NoSuchElementException("Caretaker not found with ID: " + caretakerId);
+			}
+			return caretaker;
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return null;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return null;
+		}
+
 	}
 
 	@Override
 	public List<CaretakerPojo> getAllCaretakers() {
-		return caretakerDao.getAllCaretaker();
+		try {
+			return caretakerDao.getAllCaretaker();
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return new ArrayList<>(); // Return an empty list
+		}
 	}
 
 	@Override
 	public boolean updateCaretaker(CaretakerPojo caretaker) {
-		return caretakerDao.updateCaretaker(caretaker);
+		try {
+			return caretakerDao.updateCaretaker(caretaker);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false; // failure
+		}
 	}
 
 	@Override
 	public boolean deleteCaretaker(int caretakerId) {
-		return caretakerDao.deleteCaretaker(caretakerId);
+		try {
+			return caretakerDao.deleteCaretaker(caretakerId);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false; // failure
+		}
 	}
 
 	@Override
 	public CaretakerPojo getCaretakerByUsername(String userName) {
-		return caretakerDao.getCaretakerByUsername(userName);
+		try {
+			CaretakerPojo caretaker = caretakerDao.getCaretakerByUsername(userName);
+			if (caretaker == null) {
+				throw new NoSuchElementException("Caretaker not found with username: " + userName);
+			}
+			return caretaker;
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return null;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return null;
+		}
 	}
 
 	@Override
 	public boolean updateCaretakerStatus(int caretakerId, String status) {
-		return caretakerDao.updateCaretakerStatus(caretakerId, status);
+		try {
+			return caretakerDao.updateCaretakerStatus(caretakerId, status);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false; // Indicate failure
+		}
 	}
 
 	@Override
 	public boolean handleRequest(int requestId, boolean accept) {
-		RequestPojo request = requestDao.getRequestById(requestId);
+		try {
+			RequestPojo request = requestDao.getRequestById(requestId);
 
-		if (request != null) {
-			if (accept) {
-				caretakerDao.updateCaretakerStatus(request.getCaretakerId(), "Booked");
-				request.setStatus("Accepted");
+			if (request != null) {
+				if (accept) {
+					caretakerDao.updateCaretakerStatus(request.getCaretakerId(), "Booked");
+					request.setStatus("Accepted");
+				} else {
+					request.setStatus("Rejected");
+				}
+				requestDao.updateRequest(request);
+				return true;
 			} else {
-				request.setStatus("Rejected");
+				throw new NoSuchElementException("Request not found with ID: " + requestId);
 			}
-			requestDao.updateRequest(request);
-			return true;
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return false;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false; // Indicate failure
 		}
-		return false;
 	}
 
 	@Override
 	public List<CaretakerPojo> findCaretakersByPreferences(CaretakerPreferences preferences) {
-		if (preferences == null) {
-			throw new IllegalArgumentException("Preferences cannot be null");
+		try {
+			if (preferences == null) {
+				throw new IllegalArgumentException("Preferences cannot be null");
+			}
+			return caretakerDao.findCaretakersByPreferences(preferences);
+		} catch (IllegalArgumentException e) {
+			GlobalExceptionHandler.handleIllegalArgumentException(e);
+			return new ArrayList<>(); // Return an empty list
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return new ArrayList<>(); // Return an empty list
 		}
-
-		return caretakerDao.findCaretakersByPreferences(preferences);
 	}
-
 }

@@ -3,8 +3,10 @@ package dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import exceptions.GlobalExceptionHandler;
 import pojo.RequestPojo;
 
 public class RequestDaoCollectionImpl implements RequestDao {
@@ -13,63 +15,130 @@ public class RequestDaoCollectionImpl implements RequestDao {
 
 	@Override
 	public boolean addRequest(RequestPojo request) {
-		request.setRequestId(idCounter++);
-		requestData.put(request.getRequestId(), request);
-		return true;
+		try {
+			request.setRequestId(idCounter++);
+			requestData.put(request.getRequestId(), request);
+			return true;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false;
+		}
 	}
 
 	@Override
 	public RequestPojo getRequestById(int requestId) {
-		return requestData.get(requestId);
+		try {
+			RequestPojo request = requestData.get(requestId);
+			if (request == null) {
+				throw new NoSuchElementException("Request not found with ID: " + requestId);
+			}
+			return request;
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return null;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return null;
+		}
 	}
 
 	@Override
 	public boolean updateRequest(RequestPojo request) {
-		if (requestData.containsKey(request.getRequestId())) {
-			requestData.put(request.getRequestId(), request);
-			return true;
+		try {
+			if (requestData.containsKey(request.getRequestId())) {
+				requestData.put(request.getRequestId(), request);
+				return true;
+			} else {
+				throw new NoSuchElementException("Request not found with ID: " + request.getRequestId());
+			}
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return false;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false;
 		}
-		return false;
 	}
 
 	@Override
 	public List<RequestPojo> getAllRequestsByCaretakerId(int caretakerId) {
-		return requestData.values().stream().filter(request -> request.getCaretakerId() == caretakerId)
-				.collect(Collectors.toList());
+		try {
+			return requestData.values().stream().filter(request -> request.getCaretakerId() == caretakerId)
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return List.of(); // Return an empty list in case of an error
+		}
 	}
 
 	@Override
 	public int getMaxRequestId() {
-		if (requestData.isEmpty()) {
+		try {
+			if (requestData.isEmpty()) {
+				return 0;
+			}
+			return requestData.keySet().stream().max(Integer::compare).orElse(0);
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
 			return 0;
 		}
-		return requestData.keySet().stream().max(Integer::compare).orElse(0);
 	}
 
 	@Override
 	public RequestPojo findById(int requestId) {
-		return requestData.get(requestId);
+		try {
+			RequestPojo request = requestData.get(requestId);
+			if (request == null) {
+				throw new NoSuchElementException("Request not found with ID: " + requestId);
+			}
+			return request;
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return null;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return null;
+		}
 	}
 
 	@Override
 	public int getNextRequestId() {
-		return requestData.size() + 1;
+		try {
+			return requestData.size() + 1;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return 0;
+		}
 	}
 
 	@Override
 	public boolean updateRequestStatus(int requestId, String status) {
-		RequestPojo request = requestData.get(requestId);
-		if (request != null) {
-			request.setStatus(status);
-			requestData.put(requestId, request);
-			return true;
+		try {
+			RequestPojo request = requestData.get(requestId);
+			if (request != null) {
+				request.setStatus(status);
+				requestData.put(requestId, request);
+				return true;
+			} else {
+				throw new NoSuchElementException("Request not found with ID: " + requestId);
+			}
+		} catch (NoSuchElementException e) {
+			GlobalExceptionHandler.handleNoSuchElementException(e);
+			return false;
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return false;
 		}
-		return false;
 	}
 
 	@Override
 	public List<RequestPojo> getRequestsByUserId(int userId) {
-		return requestData.values().stream().filter(request -> request.getUserId() == userId)
-				.collect(Collectors.toList());
+		try {
+			return requestData.values().stream().filter(request -> request.getUserId() == userId)
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			GlobalExceptionHandler.handleException(e);
+			return List.of(); // Return an empty list in case of an error
+		}
 	}
 }
