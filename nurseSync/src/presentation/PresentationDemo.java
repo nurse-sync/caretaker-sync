@@ -94,7 +94,7 @@ public class PresentationDemo {
 	private int getUserChoice() {
 		while (true) {
 			try {
-				System.out.print("Enter your choice: ");
+				System.out.print("Enter: ");
 				int choice = scanner.nextInt();
 				scanner.nextLine(); // Consume newline
 
@@ -331,9 +331,6 @@ public class PresentationDemo {
 		}
 	}
 
-	
-
-	
 
 	private void createUserAccount() {
 
@@ -369,42 +366,82 @@ public class PresentationDemo {
 	}
 	
 	private void sendRequest(int userId) {
-	    while (true) {
-	        try {
-	            int caretakerId = InputValidator.getValidatedNumericInput("Enter the ID of the caretaker you want to send a request to: ");
-	            String serviceLocation = InputValidator.promptForDate("Enter Service Location: "); // You might need to adapt this
-	            String patientName = InputValidator.promptForDate("Enter Patient Name: "); // You might need to adapt this
-	            int patientAge = InputValidator.getValidatedNumericInput("Enter Patient Age: ");
-	            String patientGender = InputValidator.promptForDate("Enter Patient Gender: "); // You might need to adapt this
+		while (true) {
+			try {
+				System.out.print("Enter the ID of the caretaker you want to send a request to: ");
+				int caretakerId = getUserChoice();
 
-	            String startDateStr = InputValidator.promptForDate("Enter Start Date (yyyy-MM-dd): ");
-	            String endDateStr = InputValidator.promptForDate("Enter End Date (yyyy-MM-dd): ");
+				System.out.print("Enter Service Location: ");
+				String serviceLocation = scanner.nextLine();
 
-	            if (requestService == null) {
-	                System.out.println("Error: Request service is not initialized.");
-	                return;
-	            }
+				System.out.print("Enter Patient Name: ");
+				String patientName = scanner.nextLine();
 
-	            if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
-	                System.out.println("A request with the same details has already been sent. Please try with different details.");
-	                continue; 
-	            }
+				System.out.print("Enter Patient Age: ");
+				int patientAge = getUserChoice();
 
-	            Date startDate = Date.valueOf(startDateStr);
-	            Date endDate = Date.valueOf(endDateStr);
+				System.out.print("Enter Patient Gender: ");
+				String patientGender = scanner.nextLine();
 
-	            boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation, patientName, patientAge, patientGender, startDate, endDate);
+				String startDateStr = null;
+				String endDateStr = null;
 
-	            if (result) {
-	                System.out.println("Request sent successfully!");
-	                return; 
-	            } else {
-	                System.out.println("Failed to send request. Please try again.");
-	            }
-	        } catch (Exception e) {
-	            GlobalExceptionHandler.handleException(e);
-	        }
-	    }
+				while (startDateStr == null) {
+					try {
+						System.out.print("Enter Start Date (yyyy-mm-dd): ");
+						startDateStr = scanner.nextLine();
+						Date.valueOf(startDateStr);
+					} catch (IllegalArgumentException e) {
+						GlobalExceptionHandler.handleDateFormatException(e);
+						startDateStr = null;
+					}
+				}
+
+				while (endDateStr == null) {
+					try {
+						System.out.print("Enter End Date (yyyy-mm-dd): ");
+						endDateStr = scanner.nextLine();
+						Date.valueOf(endDateStr);
+					} catch (IllegalArgumentException e) {
+						GlobalExceptionHandler.handleDateFormatException(e);
+						endDateStr = null;
+					}
+				}
+
+				// Check if a request with the same patient name, start date, and end date
+				// already exists
+				if (requestService == null) {
+					System.out.println("Error: Request service is not initialized.");
+					return;
+				}
+
+				if (requestService.hasDuplicateRequest(userId, patientName, startDateStr, endDateStr)) {
+					System.out.println(
+							"A request with the same details has already been sent. Please try with different details.");
+					return;
+				}
+
+				// Convert String dates to java.sql.Date
+				Date startDate = Date.valueOf(startDateStr);
+				Date endDate = Date.valueOf(endDateStr);
+
+				// Send the request
+				boolean result = requestService.sendRequestToCaretaker(userId, caretakerId, serviceLocation,
+						patientName, patientAge, patientGender, startDate, endDate);
+
+				if (result) {
+					System.out.println("Request sent successfully!");
+					return; // Exit after successful request
+				} else {
+					System.out.println("Failed to send request. Please try again.");
+				}
+			} catch (InputMismatchException e) {
+				GlobalExceptionHandler.handleInvalidInput();
+				scanner.nextLine(); // Clear buffer
+			} catch (Exception e) {
+				GlobalExceptionHandler.handleException(e);
+			}
+		}
 	}
 
 

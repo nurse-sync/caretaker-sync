@@ -14,7 +14,11 @@ public class RequestPojo {
 	private Date startDate;
 	private Date endDate;
 
-
+// include patient crud operations 
+// patient name - like in aadhar card 
+// verification - for caretaker, patients - approval by admin 
+// user acc - list of service-taker  
+	
 	public RequestPojo(int requestId, int userId, int caretakerId, String status, String serviceLocation,
 			String patientName, int patientAge, String patientGender, Date startDate, Date endDate) {
 		this.requestId = requestId;
