@@ -49,7 +49,7 @@ CREATE TABLE ns_address (
 CREATE TABLE ns_member_data (
     member_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     full_name VARCHAR2(255) NOT NULL,
-    age NUMBER CHECK (member_age > 0) NOT NULL,
+    age NUMBER CHECK (age > 0) NOT NULL,
     gender VARCHAR2(10) NOT NULL,
 	identification_url VARCHAR2(2048) NOT NULL,
     admin_id NUMBER NOT NULL,

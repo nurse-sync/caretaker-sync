@@ -13,28 +13,29 @@ public class DBQueries {
     
     // ==> ns_login table
     public static final String CREATE_LOGIN = "INSERT INTO ns_login (user_id, user_name, password) VALUES (?, ?, ?)";
-    public static final String FETCH_LOGIN_BY_USER_ID = "SELECT * FROM ns_login WHERE user_id = ?";
+    public static final String FETCH_BY_USER_ID = "SELECT * FROM ns_login WHERE user_id = ?";
     public static final String UPDATE_LOGIN = "UPDATE ns_login SET user_name = ?, password = ? WHERE user_id = ?";
     public static final String DELETE_LOGIN = "DELETE FROM ns_login WHERE user_id = ?";
-    
+    public static final String GET_USER_BY_USERNAME = "SELECT user_id, user_name, password FROM ns_user_info WHERE user_name = ?";
+
     // check if user exists with the provided username and password 
     public static final String VERIFY_USER = "SELECT COUNT(*) FROM ns_login WHERE user_name = ? AND password = ?";
     
     
     // ==> ns_user_login_role table
-    public static final String ASSIGN_ROLE_TO_USER = "INSERT INTO ns_user_login_role (user_id_fk, role_id_fk) VALUES (?, ?)";
+    public static final String ASSIGN_ROLE_TO_USER = "INSERT INTO ns_user_login_role (user_id, role_id) VALUES (?, ?)";
     public static final String FETCH_ROLES_BY_USER_ID = "SELECT role_name FROM ns_role r INNER JOIN ns_user_login_role ur ON r.role_id = ur.role_id WHERE ur.user_id = ?";
     public static final String REMOVE_ROLE_FROM_USER = "DELETE FROM ns_user_login_role WHERE user_id = ? AND role_id = ?";
 
     // ==> ns_address table
-    public static final String CREATE_ADDRESS = "INSERT INTO ns_address (address_flat_number, address_house_number, address_street_name, address_locality, address_district, address_pincode, address_country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	public static final String ADD_ADDRESS = "INSERT INTO ns_address (address_flat_number, address_house_number, address_street_name, address_locality, address_district, address_pincode, address_country) VALUES (?, ?, ?, ?, ?, ?, ?)";
     public static final String FETCH_ADDRESS_BY_ID = "SELECT * FROM ns_address WHERE address_id = ?";
     public static final String FETCH_ALL_ADDRESSES = "SELECT * FROM ns_address";
     public static final String UPDATE_ADDRESS = "UPDATE ns_address SET address_flat_number = ?, address_house_number = ?, address_street_name = ?, address_locality = ?, address_district = ?, address_pincode = ?, address_country = ? WHERE address_id = ?";
     public static final String DELETE_ADDRESS = "DELETE FROM ns_address WHERE address_id = ?";
 
     // ==> ns_member_data table
-    public static final String CREATE_MEMBER = "INSERT INTO ns_member_data (full_name, age, gender, identification_url, admin_id, status_id) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String ADD_MEMBER = "INSERT INTO ns_member_data (full_name, age, gender, identification_url, admin_id, status_id) VALUES (?, ?, ?, ?, ?, ?)";
     public static final String FETCH_MEMBER_BY_ID = "SELECT * FROM ns_member_data WHERE member_id = ?";
     public static final String FETCH_ALL_MEMBERS = "SELECT * FROM ns_member_data";
     public static final String UPDATE_MEMBER = "UPDATE ns_member_data SET full_name = ?, age = ?, gender = ?, identification_url = ?, admin_id = ?, status_id = ? WHERE member_id = ?";
@@ -43,7 +44,7 @@ public class DBQueries {
     public static final String UPDATE_MEMBER_STATUS = "UPDATE ns_member_data SET status_id = ? WHERE member_id = ?";
 
     // ==> ns_nurse_license table
-    public static final String CREATE_NURSE_LICENSE = "INSERT INTO ns_nurse_license (sp_id, nurse_license_url) VALUES (?, ?)";
+    public static final String ADD_NURSE_LICENSE = "INSERT INTO ns_nurse_license (sp_id, nurse_license_url) VALUES (?, ?)";
     public static final String FETCH_NURSE_LICENSE_BY_ID = "SELECT * FROM ns_nurse_license WHERE nurse_license_id = ?";
     public static final String FETCH_ALL_NURSE_LICENSES = "SELECT * FROM ns_nurse_license";
     public static final String UPDATE_NURSE_LICENSE = "UPDATE ns_nurse_license SET sp_id = ?, nurse_license_url = ? WHERE nurse_license_id = ?";

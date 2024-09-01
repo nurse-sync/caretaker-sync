@@ -4,36 +4,36 @@ import java.sql.Date;
 
 public class ServiceProviderPojo {
 	private int spId;
-    private String gender;
-    private int category;
-    private double weeklySalary;
-    private Date availableFrom;
-    private Date availableTo;
-    private int addressId;
-    private int qualificationId;
-    private boolean liveIn;
-    private int adminId;
-    private int statusId;
-    private String idProofUrl;
-    private Integer nurseLicenseId;  // Use Integer to allow for null values
+	private String gender;
+	private int category;
+	private double weeklySalary;
+	private Date availableFrom;
+	private Date availableTo;
+	private int addressId;
+	private int qualificationId;
+	private boolean liveIn;
+	private int adminId;
+	private int statusId;
+	private String idProofUrl;
+	private Integer nurseLicenseId; // Use Integer to allow for null values
 
-    public ServiceProviderPojo(int spId, String gender, int category, double weeklySalary, Date availableFrom, 
-                           Date availableTo, int addressId, int qualificationId, boolean liveIn, 
-                           int adminId, int statusId, String idProofUrl, Integer nurseLicenseId) {
-        this.spId = spId;
-        this.gender = gender;
-        this.category = category;
-        this.weeklySalary = weeklySalary;
-        this.availableFrom = availableFrom;
-        this.availableTo = availableTo;
-        this.addressId = addressId;
-        this.qualificationId = qualificationId;
-        this.liveIn = liveIn;
-        this.adminId = adminId;
-        this.statusId = statusId;
-        this.idProofUrl = idProofUrl;
-        this.nurseLicenseId = nurseLicenseId;
-    }
+	public ServiceProviderPojo(int spId, String gender, int category, double weeklySalary, Date availableFrom,
+			Date availableTo, int addressId, int qualificationId, boolean liveIn, int adminId, int statusId,
+			String idProofUrl, Integer nurseLicenseId) {
+		this.spId = spId;
+		this.gender = gender;
+		this.category = category;
+		this.weeklySalary = weeklySalary;
+		this.availableFrom = availableFrom;
+		this.availableTo = availableTo;
+		this.addressId = addressId;
+		this.qualificationId = qualificationId;
+		this.liveIn = liveIn;
+		this.adminId = adminId;
+		this.statusId = statusId;
+		this.idProofUrl = idProofUrl;
+		this.nurseLicenseId = nurseLicenseId;
+	}
 
 	public int getSpId() {
 		return spId;
