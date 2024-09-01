@@ -51,7 +51,7 @@ public class DBQueries {
     public static final String DELETE_NURSE_LICENSE = "DELETE FROM ns_nurse_license WHERE nurse_license_id = ?";
 
     // ==> ns_qualification table
-    public static final String CREATE_QUALIFICATION = "INSERT INTO ns_qualification (sp_id, experience_in_years, role_name) VALUES (?, ?, ?)";
+    public static final String ADD_QUALIFICATION = "INSERT INTO ns_qualification (sp_id, experience_in_years, role_name) VALUES (?, ?, ?)";
     public static final String FETCH_QUALIFICATION_BY_ID = "SELECT * FROM ns_qualification WHERE sp_qualification_id = ?";
     public static final String FETCH_ALL_QUALIFICATIONS = "SELECT * FROM ns_qualification";
     public static final String UPDATE_QUALIFICATION = "UPDATE ns_qualification SET sp_id = ?, experience_in_years = ?, role_name = ? WHERE sp_qualification_id = ?";
