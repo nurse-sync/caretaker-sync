@@ -2,6 +2,13 @@ package dao;
 
 public class DBQueries {
 
+	// ==> ns_status
+	public static final String ADD_STATUS = "INSERT INTO ns_status (status_id, status_name) VALUES (?, ?)";
+    public static final String FETCH_STATUS_BY_ID = "SELECT * FROM ns_status WHERE status_id = ?";
+    public static final String FETCH_ALL_STATUSES = "SELECT * FROM ns_status";
+    public static final String UPDATE_STATUS = "UPDATE ns_status SET status_name = ? WHERE status_id = ?";
+    public static final String DELETE_STATUS = "DELETE FROM ns_status WHERE status_id = ?";
+    
     // ==> ns_user_info table
     public static final String CREATE_USER = "INSERT INTO ns_user_info (full_name, email, phone_number) VALUES (?, ?, ?)";
     public static final String FETCH_USER_BY_ID = "SELECT * FROM ns_user_info WHERE user_id = ?";
@@ -32,7 +39,6 @@ public class DBQueries {
 
     // check if user exists with the provided username and password 
     public static final String VERIFY_USER = "SELECT COUNT(*) FROM ns_login WHERE user_name = ? AND password = ?";
-    
     
     // ==> ns_user_login_role table
     public static final String ASSIGN_ROLE_TO_USER = "INSERT INTO ns_user_login_role (user_id, role_id) VALUES (?, ?)";
