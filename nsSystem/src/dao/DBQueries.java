@@ -9,7 +9,19 @@ public class DBQueries {
     public static final String UPDATE_USER = "UPDATE ns_user_info SET full_name = ?, email = ?, phone_number = ? WHERE user_id = ?";
     public static final String DELETE_USER = "DELETE FROM ns_user_info WHERE user_id = ?";
 
+    // ==> ns_role
+    public static final String ADD_ROLE = "INSERT INTO ns_role (role_name) VALUES (?)";
+    public static final String UPDATE_ROLE = "UPDATE ns_role SET role_name = ? WHERE role_id = ?";
+    public static final String DELETE_ROLE = "DELETE FROM ns_role WHERE role_id = ?";
+    public static final String FETCH_ROLE_BY_ID = "SELECT role_id, role_name FROM ns_role WHERE role_id = ?";
+    public static final String FETCH_ALL_ROLES = "SELECT role_id, role_name FROM ns_role";
     
+    // ==> ns_sp_category
+    public static final String ADD_SP_CATEGORY = "INSERT INTO ns_sp_category (sp_category_id, category) VALUES (?, ?)";
+    public static final String FETCH_SP_CATEGORY_BY_ID = "SELECT * FROM ns_sp_category WHERE sp_category_id = ?";
+    public static final String FETCH_ALL_SP_CATEGORIES = "SELECT * FROM ns_sp_category";
+    public static final String UPDATE_SP_CATEGORY = "UPDATE ns_sp_category SET category = ? WHERE sp_category_id = ?";
+    public static final String DELETE_SP_CATEGORY = "DELETE FROM ns_sp_category WHERE sp_category_id = ?";
     
     // ==> ns_login table
     public static final String CREATE_LOGIN = "INSERT INTO ns_login (user_id, user_name, password) VALUES (?, ?, ?)";
@@ -58,7 +70,7 @@ public class DBQueries {
     public static final String DELETE_QUALIFICATION = "DELETE FROM ns_qualification WHERE sp_qualification_id = ?";
 
     // ==> ns_service_provider table
-    public static final String CREATE_SERVICE_PROVIDER = "INSERT INTO ns_service_provider (sp_id, gender, category, weekly_salary, available_from, available_to, address_id, qualification_id, live_in, admin_id, status_id, id_proof_url, nurse_license_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String ADD_SERVICE_PROVIDER = "INSERT INTO ns_service_provider (sp_id, gender, category, weekly_salary, available_from, available_to, address_id, qualification_id, live_in, admin_id, status_id, id_proof_url, nurse_license_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String FETCH_SERVICE_PROVIDER_BY_ID = "SELECT * FROM ns_service_provider WHERE sp_id = ?";
     public static final String FETCH_ALL_SERVICE_PROVIDERS = "SELECT * FROM ns_service_provider";
     public static final String UPDATE_SERVICE_PROVIDER = "UPDATE ns_service_provider SET gender = ?, category = ?, weekly_salary = ?, available_from = ?, available_to = ?, address_id = ?, qualification_id = ?, live_in = ?, admin_id = ?, status_id = ?, id_proof_url = ?, nurse_license_id = ? WHERE sp_id = ?";
@@ -69,8 +81,8 @@ public class DBQueries {
     public static final String UPDATE_SERVICE_PROVIDER_STATUS = "UPDATE ns_service_provider SET status_id = ? WHERE sp_id = ?";
 
     // ==> ns_request table
-    public static final String CREATE_REQUEST = "INSERT INTO ns_request (client_id, sp_id, address_id, start_date, end_date, member_id, message_to_sp, message_from_sp, status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String FETCH_REQUEST_BY_ID = "SELECT * FROM ns_request WHERE request_id = ?";
+    public static final String ADD_REQUEST = "INSERT INTO ns_request (client_id, sp_id, address_id, start_date, end_date, member_id, message_to_sp, message_from_sp, status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String FETCH_REQUEST_BY_ID = "SELECT request_id, client_id, sp_id, address_id, start_date, end_date, member_id, message_to_sp, message_from_sp, status_id FROM ns_request WHERE request_id = ?";
     public static final String FETCH_ALL_REQUESTS = "SELECT * FROM ns_request";
     public static final String UPDATE_REQUEST = "UPDATE ns_request SET client_id = ?, sp_id = ?, address_id = ?, start_date = ?, end_date = ?, member_id = ?, message_to_sp = ?, message_from_sp = ?, status_id = ? WHERE request_id = ?";
     public static final String DELETE_REQUEST = "DELETE FROM ns_request WHERE request_id = ?";
