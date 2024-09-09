@@ -2,25 +2,25 @@ package model;
 
 public class AddressPojo {
 	private int addressId;
-    private String addressFlatNumber;
-    private String addressHouseNumber;
-    private String addressStreetName;
-    private String addressLocality;
-    private String addressDistrict;
-    private int addressPincode;
-    private String addressCountry;
+	private String addressFlatNumber;
+	private String addressHouseNumber;
+	private String addressStreetName;
+	private String addressLocality;
+	private String addressDistrict;
+	private int addressPincode;
+	private String addressCountry;
 
-    public AddressPojo(int addressId, String addressFlatNumber, String addressHouseNumber, String addressStreetName, 
-                   String addressLocality, String addressDistrict, int addressPincode, String addressCountry) {
-        this.addressId = addressId;
-        this.addressFlatNumber = addressFlatNumber;
-        this.addressHouseNumber = addressHouseNumber;
-        this.addressStreetName = addressStreetName;
-        this.addressLocality = addressLocality;
-        this.addressDistrict = addressDistrict;
-        this.addressPincode = addressPincode;
-        this.addressCountry = addressCountry;
-    }
+	public AddressPojo(int addressId, String addressFlatNumber, String addressHouseNumber, String addressStreetName,
+			String addressLocality, String addressDistrict, int addressPincode, String addressCountry) {
+		this.addressId = addressId;
+		this.addressFlatNumber = addressFlatNumber;
+		this.addressHouseNumber = addressHouseNumber;
+		this.addressStreetName = addressStreetName;
+		this.addressLocality = addressLocality;
+		this.addressDistrict = addressDistrict;
+		this.addressPincode = addressPincode;
+		this.addressCountry = addressCountry;
+	}
 
 	public int getAddressId() {
 		return addressId;
