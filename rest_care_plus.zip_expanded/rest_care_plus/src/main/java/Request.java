@@ -436,3 +436,94 @@ public class Request {
 	
 	
 	
+	
+	
+	package com.example.controller;
+
+	import com.example.pojo.RequestPojo;
+	import com.example.service.RequestService;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.http.HttpStatus;
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.web.bind.annotation.*;
+
+	import java.util.List;
+
+	@RestController
+	@RequestMapping("/api/requests")
+	public class RequestController {
+
+	    @Autowired
+	    private RequestService requestService;
+
+	    // Add a new request
+	    @PostMapping
+	    public ResponseEntity<RequestPojo> addRequest(@RequestBody RequestPojo requestPojo) {
+	        RequestPojo savedRequest = requestService.addRequest(requestPojo);
+	        return new ResponseEntity<>(savedRequest, HttpStatus.CREATED);
+	    }
+
+	    // Fetch all requests
+	    @GetMapping
+	    public ResponseEntity<List<RequestPojo>> fetchAllRequests() {
+	        List<RequestPojo> requests = requestService.fetchAllRequests();
+	        return new ResponseEntity<>(requests, HttpStatus.OK);
+	    }
+
+	    // Fetch request by ID
+	    @GetMapping("/{id}")
+	    public ResponseEntity<RequestPojo> fetchRequestById(@PathVariable("id") int id) {
+	        RequestPojo request = requestService.fetchRequestById(id);
+	        return new ResponseEntity<>(request, HttpStatus.OK);
+	    }
+
+	    // Update request
+	    @PutMapping("/{id}")
+	    public ResponseEntity<RequestPojo> updateRequest(@PathVariable("id") int id, @RequestBody RequestPojo requestPojo) {
+	        RequestPojo updatedRequest = requestService.updateRequest(id, requestPojo);
+	        return new ResponseEntity<>(updatedRequest, HttpStatus.OK);
+	    }
+
+	    // Get requests by client
+	    @GetMapping("/client/{clientId}")
+	    public ResponseEntity<List<RequestPojo>> getRequestsByClient(@PathVariable("clientId") int clientId) {
+	        List<RequestPojo> requests = requestService.getRequestsByClient(clientId);
+	        return new ResponseEntity<>(requests, HttpStatus.OK);
+	    }
+
+	    // Get requests by service provider
+	    @GetMapping("/service-provider/{serviceProviderId}")
+	    public ResponseEntity<List<RequestPojo>> getRequestsByServiceProvider(@PathVariable("serviceProviderId") int serviceProviderId) {
+	        List<RequestPojo> requests = requestService.getRequestsByServiceProvider(serviceProviderId);
+	        return new ResponseEntity<>(requests, HttpStatus.OK);
+	    }
+
+	    // Get requests by client and status
+	    @GetMapping("/client/{clientId}/status/{statusId}")
+	    public ResponseEntity<List<RequestPojo>> getRequestsByClientAndStatus(@PathVariable("clientId") int clientId,
+	                                                                           @PathVariable("statusId") int statusId) {
+	        List<RequestPojo> requests = requestService.getRequestsByClientAndStatus(clientId, statusId);
+	        return new ResponseEntity<>(requests, HttpStatus.OK);
+	    }
+
+	    // Get requests by service provider and status
+	    @GetMapping("/service-provider/{serviceProviderId}/status/{statusId}")
+	    public ResponseEntity<List<RequestPojo>> getRequestsByServiceProviderAndStatus(@PathVariable("serviceProviderId") int serviceProviderId,
+	                                                                                   @PathVariable("statusId") int statusId) {
+	        List<RequestPojo> requests = requestService.getRequestsByServiceProviderAndStatus(serviceProviderId, statusId);
+	        return new ResponseEntity<>(requests, HttpStatus.OK);
+	    }
+
+	    // Update request status
+	    @PatchMapping("/{id}/status")
+	    public ResponseEntity<RequestPojo> updateRequestStatus(@PathVariable("id") int id, @RequestParam("statusId") int statusId) {
+	        RequestPojo updatedRequest = requestService.updateRequestStatus(id, statusId);
+	        return new ResponseEntity<>(updatedRequest, HttpStatus.OK);
+	    }
+	}
+
+	
+	
+	
+	
+	
