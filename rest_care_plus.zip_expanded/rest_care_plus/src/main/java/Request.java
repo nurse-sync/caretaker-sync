@@ -1,3 +1,175 @@
+
+
+ @Override
+    public RequestPojo addRequest(RequestPojo requestPojo) {
+        // Fetch and verify required entities
+        UserInfoEntity clientEntity = userInfoDao.findById(requestPojo.getClientEntity().getUserId())
+            .orElseThrow(() -> new RuntimeException("Client not found with ID: " + requestPojo.getClientEntity().getUserId()));
+
+        ServiceProviderEntity serviceProviderEntity = serviceProviderDao.findById(requestPojo.getServiceProviderEntity().getSpId())
+            .orElseThrow(() -> new RuntimeException("Service Provider not found with ID: " + requestPojo.getServiceProviderEntity().getSpId()));
+
+        AddressEntity addressEntity = addressDao.findById(requestPojo.getAddressEntity().getAddressId())
+            .orElseThrow(() -> new RuntimeException("Address not found with ID: " + requestPojo.getAddressEntity().getAddressId()));
+
+        MemberEntity memberEntity = memberDao.findById(requestPojo.getMemberEntity().getMemberId())
+            .orElseThrow(() -> new RuntimeException("Member not found with ID: " + requestPojo.getMemberEntity().getMemberId()));
+
+        StatusEntity statusEntity = statusDao.findById(requestPojo.getStatusEntity().getStatusId())
+            .orElseThrow(() -> new RuntimeException("Status not found with ID: " + requestPojo.getStatusEntity().getStatusId()));
+
+        // Create and populate RequestEntity
+        RequestEntity requestEntity = new RequestEntity();
+        try {
+            BeanUtils.copyProperties(requestEntity, requestPojo); // Copy properties from POJO to Entity
+        } catch (Exception e) {
+            throw new RuntimeException("Error copying properties", e);
+        }
+        
+        // Set relationships
+        requestEntity.setClientEntity(clientEntity);
+        requestEntity.setServiceProviderEntity(serviceProviderEntity);
+        requestEntity.setAddressEntity(addressEntity);
+        requestEntity.setMemberEntity(memberEntity);
+        requestEntity.setStatusEntity(statusEntity);
+
+        // Save the RequestEntity
+        RequestEntity savedRequest = requestDao.save(requestEntity);
+
+        // Convert and return saved RequestPojo
+        return convertEntityToPojo(savedRequest);
+    }
+
+    @Override
+    public RequestPojo updateRequest(int requestId, RequestPojo requestPojo) {
+        // Fetch existing RequestEntity
+        RequestEntity existingRequest = requestDao.findById(requestId)
+            .orElseThrow(() -> new RuntimeException("Request not found with ID: " + requestId));
+
+        // Update fields
+        try {
+            BeanUtils.copyProperties(existingRequest, requestPojo); // Copy properties from POJO to existing Entity
+        } catch (Exception e) {
+            throw new RuntimeException("Error copying properties", e);
+        }
+
+        // Update relationships if necessary
+        if (requestPojo.getClientEntity() != null) {
+            UserInfoEntity clientEntity = userInfoDao.findById(requestPojo.getClientEntity().getUserId())
+                .orElseThrow(() -> new RuntimeException("Client not found with ID: " + requestPojo.getClientEntity().getUserId()));
+            existingRequest.setClientEntity(clientEntity);
+        }
+
+        if (requestPojo.getServiceProviderEntity() != null) {
+            ServiceProviderEntity serviceProviderEntity = serviceProviderDao.findById(requestPojo.getServiceProviderEntity().getSpId())
+                .orElseThrow(() -> new RuntimeException("Service Provider not found with ID: " + requestPojo.getServiceProviderEntity().getSpId()));
+            existingRequest.setServiceProviderEntity(serviceProviderEntity);
+        }
+
+        if (requestPojo.getAddressEntity() != null) {
+            AddressEntity addressEntity = addressDao.findById(requestPojo.getAddressEntity().getAddressId())
+                .orElseThrow(() -> new RuntimeException("Address not found with ID: " + requestPojo.getAddressEntity().getAddressId()));
+            existingRequest.setAddressEntity(addressEntity);
+        }
+
+        if (requestPojo.getMemberEntity() != null) {
+            MemberEntity memberEntity = memberDao.findById(requestPojo.getMemberEntity().getMemberId())
+                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + requestPojo.getMemberEntity().getMemberId()));
+            existingRequest.setMemberEntity(memberEntity);
+        }
+
+        if (requestPojo.getStatusEntity() != null) {
+            StatusEntity statusEntity = statusDao.findById(requestPojo.getStatusEntity().getStatusId())
+                .orElseThrow(() -> new RuntimeException("Status not found with ID: " + requestPojo.getStatusEntity().getStatusId()));
+            existingRequest.setStatusEntity(statusEntity);
+        }
+
+        // Save updated RequestEntity
+        RequestEntity updatedRequest = requestDao.save(existingRequest);
+
+        // Convert and return updated RequestPojo
+        return convertEntityToPojo(updatedRequest);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    {
+    	  "clientEntity": {
+    	    "userId": 1
+    	  },
+    	  "serviceProviderEntity": {
+    	    "spId": 2
+    	  },
+    	  "addressEntity": {
+    	    "addressId": 3
+    	  },
+    	  "memberEntity": {
+    	    "memberId": 4
+    	  },
+    	  "statusEntity": {
+    	    "statusId": 5
+    	  },
+    	  "startDate": "2024-09-01T10:00:00Z",
+    	  "endDate": "2024-09-07T10:00:00Z",
+    	  "messageToSp": "Please provide detailed services.",
+    	  "messageFromSp": "We will get back to you soon."
+    	}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    {
+    	  "clientEntity": {
+    	    "userId": 1
+    	  },
+    	  "serviceProviderEntity": {
+    	    "spId": 2
+    	  },
+    	  "addressEntity": {
+    	    "addressId": 3
+    	  },
+    	  "memberEntity": {
+    	    "memberId": 4
+    	  },
+    	  "statusEntity": {
+    	    "statusId": 6  // Updated status ID
+    	  },
+    	  "startDate": "2024-09-01T10:00:00Z",
+    	  "endDate": "2024-09-07T10:00:00Z",
+    	  "messageToSp": "Please confirm the service details.",
+    	  "messageFromSp": "Thank you for your request."
+    	}
+
+
+
+
+
+
+
+
 {
   "clientEntity": {
     "userId": 1
