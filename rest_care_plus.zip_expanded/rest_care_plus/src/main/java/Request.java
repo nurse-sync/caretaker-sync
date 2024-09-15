@@ -1,3 +1,66 @@
+{
+  "requestId": 0,  // This is auto-generated, so setting it to 0 or omitting it is fine
+  "clientPojo": {
+    "userId": 1,  // Replace with a valid UserInfo ID
+    "fullName": "John Doe",
+    "email": "john.doe@example.com",
+    "phoneNumber": "123-456-7890"
+    // Add other necessary fields from UserInfoPojo
+  },
+  "serviceProviderPojo": {
+    "spId": 1,  // Replace with a valid ServiceProvider ID
+    "name": "Service Provider Name",
+    "contactEmail": "sp@example.com",
+    "contactPhone": "098-765-4321"
+    // Add other necessary fields from ServiceProviderPojo
+  },
+  "addressPojo": {
+    "addressId": 1,  // Replace with a valid Address ID
+    "street": "123 Main St",
+    "city": "Cityville",
+    "state": "ST",
+    "postalCode": "12345"
+    // Add other necessary fields from AddressPojo
+  },
+  "startDate": "2024-09-15T08:00:00Z",  // Use ISO 8601 format for dates
+  "endDate": "2024-09-20T17:00:00Z",
+  "memberPojo": {
+    "memberId": 1,  // Replace with a valid Member ID
+    "fullName": "Jane Smith",
+    "age": 30,
+    "gender": "Female",
+    "identificationUrl": "http://example.com/id"
+    // Add other necessary fields from MemberPojo
+  },
+  "messageToSp": "Please provide the requested service.",
+  "messageFromSp": "Thank you for your request.",
+  "statusPojo": {
+    "statusId": 1,  // Replace with a valid Status ID
+    "statusName": "Pending"
+    // Add other necessary fields from StatusPojo
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
  @Override
