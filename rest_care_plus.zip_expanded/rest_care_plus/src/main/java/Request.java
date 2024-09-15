@@ -255,5 +255,184 @@ public class Request {
 	
 	
 	
+	import java.util.List;
+	import java.util.Optional;
+	import java.util.stream.Collectors;
+
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.stereotype.Service;
+	import org.springframework.beans.BeanUtils;
+
+	@Service
+	public class RequestServiceImpl implements RequestService {
+
+	    @Autowired
+	    private RequestDao requestDao;
+
+	    @Autowired
+	    private UserInfoDao userInfoDao;
+
+	    @Autowired
+	    private ServiceProviderDao serviceProviderDao;
+
+	    @Autowired
+	    private StatusDao statusDao;
+
+	    @Autowired
+	    private MemberDao memberDao;
+
+	    // Convert RequestEntity to RequestPojo
+	    private RequestPojo convertEntityToPojo(RequestEntity requestEntity) {
+	        RequestPojo requestPojo = new RequestPojo();
+	        BeanUtils.copyProperties(requestEntity, requestPojo);
+
+	        if (requestEntity.getClientEntity() != null) {
+	            UserInfoPojo clientPojo = new UserInfoPojo();
+	            BeanUtils.copyProperties(requestEntity.getClientEntity(), clientPojo);
+	            requestPojo.setClientPojo(clientPojo);
+	        }
+
+	        if (requestEntity.getServiceProviderEntity() != null) {
+	            ServiceProviderPojo spPojo = new ServiceProviderPojo();
+	            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity(), spPojo);
+	            requestPojo.setServiceProviderPojo(spPojo);
+	        }
+
+	        if (requestEntity.getStatusEntity() != null) {
+	            StatusPojo statusPojo = new StatusPojo();
+	            BeanUtils.copyProperties(requestEntity.getStatusEntity(), statusPojo);
+	            requestPojo.setStatusPojo(statusPojo);
+	        }
+
+	        if (requestEntity.getMemberEntity() != null) {
+	            MemberPojo memberPojo = new MemberPojo();
+	            BeanUtils.copyProperties(requestEntity.getMemberEntity(), memberPojo);
+	            requestPojo.setMemberPojo(memberPojo);
+	        }
+
+	        return requestPojo;
+	    }
+
+	    // Convert RequestPojo to RequestEntity
+	    private RequestEntity convertPojoToEntity(RequestPojo requestPojo) {
+	        RequestEntity requestEntity = new RequestEntity();
+	        BeanUtils.copyProperties(requestPojo, requestEntity);
+
+	        if (requestPojo.getClientPojo() != null) {
+	            UserInfoEntity clientEntity = new UserInfoEntity();
+	            BeanUtils.copyProperties(requestPojo.getClientPojo(), clientEntity);
+	            requestEntity.setClientEntity(clientEntity);
+	        }
+
+	        if (requestPojo.getServiceProviderPojo() != null) {
+	            ServiceProviderEntity spEntity = new ServiceProviderEntity();
+	            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo(), spEntity);
+	            requestEntity.setServiceProviderEntity(spEntity);
+	        }
+
+	        if (requestPojo.getStatusPojo() != null) {
+	            StatusEntity statusEntity = new StatusEntity();
+	            BeanUtils.copyProperties(requestPojo.getStatusPojo(), statusEntity);
+	            requestEntity.setStatusEntity(statusEntity);
+	        }
+
+	        if (requestPojo.getMemberPojo() != null) {
+	            MemberEntity memberEntity = new MemberEntity();
+	            BeanUtils.copyProperties(requestPojo.getMemberPojo(), memberEntity);
+	            requestEntity.setMemberEntity(memberEntity);
+	        }
+
+	        return requestEntity;
+	    }
+
+	    // Add new request
+	    @Override
+	    public RequestPojo addRequest(RequestPojo requestPojo) {
+	        RequestEntity requestEntity = convertPojoToEntity(requestPojo);
+	        RequestEntity savedRequest = requestDao.save(requestEntity);
+	        return convertEntityToPojo(savedRequest);
+	    }
+
+	    // Fetch all requests
+	    @Override
+	    public List<RequestPojo> fetchAllRequests() {
+	        List<RequestEntity> requestEntities = requestDao.findAll();
+	        return requestEntities.stream().map(this::convertEntityToPojo).collect(Collectors.toList());
+	    }
+
+	    // Fetch a request by ID
+	    @Override
+	    public RequestPojo fetchRequestById(int requestId) {
+	        Optional<RequestEntity> requestEntityOpt = requestDao.findById(requestId);
+	        return requestEntityOpt.map(this::convertEntityToPojo).orElse(null); // No exception handling
+	    }
+
+	    // Update request by passing RequestPojo
+	    @Override
+	    public RequestPojo updateRequest(RequestPojo requestPojo) {
+	        int requestId = requestPojo.getRequestId(); // Assuming RequestPojo has requestId
+	        Optional<RequestEntity> requestEntityOpt = requestDao.findById(requestId);
+	        if (requestEntityOpt.isPresent()) {
+	            RequestEntity requestEntity = requestEntityOpt.get();
+	            BeanUtils.copyProperties(requestPojo, requestEntity, "requestId");
+	            RequestEntity updatedRequest = requestDao.save(requestEntity);
+	            return convertEntityToPojo(updatedRequest);
+	        }
+	        return null; // No exception handling
+	    }
+
+	    // Get requests by client ID
+	    @Override
+	    public List<RequestPojo> getRequestsByClient(int clientId) {
+	        UserInfoEntity clientEntity = userInfoDao.findById(clientId).orElse(null); // No exception handling
+	        List<RequestEntity> requestEntities = requestDao.findByClientEntity(clientEntity);
+	        return requestEntities.stream().map(this::convertEntityToPojo).collect(Collectors.toList());
+	    }
+
+	    // Get requests by service provider ID
+	    @Override
+	    public List<RequestPojo> getRequestsByServiceProvider(int spId) {
+	        ServiceProviderEntity spEntity = serviceProviderDao.findById(spId).orElse(null); // No exception handling
+	        List<RequestEntity> requestEntities = requestDao.findByServiceProviderEntity(spEntity);
+	        return requestEntities.stream().map(this::convertEntityToPojo).collect(Collectors.toList());
+	    }
+
+	    // Get requests by client and status ID
+	    @Override
+	    public List<RequestPojo> getRequestsByClientAndStatus(int clientId, int statusId) {
+	        UserInfoEntity clientEntity = userInfoDao.findById(clientId).orElse(null); // No exception handling
+	        StatusEntity statusEntity = statusDao.findById(statusId).orElse(null); // No exception handling
+	        List<RequestEntity> requestEntities = requestDao.findByClientEntityAndStatusEntity(clientEntity, statusEntity);
+	        return requestEntities.stream().map(this::convertEntityToPojo).collect(Collectors.toList());
+	    }
+
+	    // Get requests by service provider and status ID
+	    @Override
+	    public List<RequestPojo> getRequestsByServiceProviderAndStatus(int spId, int statusId) {
+	        ServiceProviderEntity spEntity = serviceProviderDao.findById(spId).orElse(null); // No exception handling
+	        StatusEntity statusEntity = statusDao.findById(statusId).orElse(null); // No exception handling
+	        List<RequestEntity> requestEntities = requestDao.findByServiceProviderEntityAndStatusEntity(spEntity, statusEntity);
+	        return requestEntities.stream().map(this::convertEntityToPojo).collect(Collectors.toList());
+	    }
+
+	    // Update only the status of the request
+	    @Override
+	    public RequestPojo updateRequestStatus(int requestId, int statusId) {
+	        Optional<RequestEntity> requestEntityOpt = requestDao.findById(requestId);
+	        if (requestEntityOpt.isPresent()) {
+	            RequestEntity requestEntity = requestEntityOpt.get();
+	            StatusEntity statusEntity = statusDao.findById(statusId).orElse(null); // No exception handling
+	            requestEntity.setStatusEntity(statusEntity);
+	            RequestEntity updatedRequest = requestDao.save(requestEntity);
+	            return convertEntityToPojo(updatedRequest);
+	        }
+	        return null; // No exception handling
+	    }
+	}
+
+	
+	
+	
+	
 	
 	
