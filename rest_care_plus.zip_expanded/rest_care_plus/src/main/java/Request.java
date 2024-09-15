@@ -1,3 +1,63 @@
+{
+  "clientEntity": {
+    "userId": 1
+  },
+  "serviceProviderEntity": {
+    "spId": 2
+  },
+  "addressEntity": {
+    "addressId": 3
+  },
+  "startDate": "2024-09-25",
+  "endDate": "2024-09-30",
+  "memberEntity": {
+    "memberId": 4
+  },
+  "messageToSp": "Please confirm your availability.",
+  "statusEntity": {
+    "statusId": 1
+  }
+}
+
+
+
+
+
+
+
+{
+	  "clientEntity": {
+	    "userId": 1
+	  },
+	  "serviceProviderEntity": {
+	    "spId": 2
+	  },
+	  "addressEntity": {
+	    "addressId": 3
+	  },
+	  "startDate": "2024-09-25",
+	  "endDate": "2024-09-30",
+	  "memberEntity": {
+	    "memberId": 4
+	  },
+	  "messageToSp": "Updated message to service provider.",
+	  "messageFromSp": "Service provider message updated.",
+	  "statusEntity": {
+	    "statusId": 2
+	  }
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 public class Request {
 	import java.util.List;
