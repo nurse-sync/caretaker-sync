@@ -227,6 +227,30 @@ public class Request {
 	
 	
 	
+	@Override
+	public RequestPojo updateRequest(RequestPojo requestPojo) {
+	    int requestId = requestPojo.getRequestId(); // Assuming RequestPojo has requestId
+	    RequestEntity requestEntity = requestDao.findById(requestId)
+	            .orElseThrow(() -> new ResourceNotFoundException("Request not found with ID: " + requestId));
+
+	    // Copy properties from pojo to entity, excluding the ID
+	    BeanUtils.copyProperties(requestPojo, requestEntity, "requestId");
+
+	    // Save updated entity
+	    RequestEntity updatedRequest = requestDao.save(requestEntity);
+	    return convertEntityToPojo(updatedRequest);
+	}
+
+	
+	
+	
+	
+	@PutMapping
+	public ResponseEntity<RequestPojo> updateRequest(@RequestBody RequestPojo requestPojo) {
+	    RequestPojo updatedRequest = requestService.updateRequest(requestPojo);
+	    return new ResponseEntity<>(updatedRequest, HttpStatus.OK);
+	}
+
 	
 	
 	
