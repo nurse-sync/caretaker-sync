@@ -1,9 +1,213 @@
+private RequestPojo convertEntityToPojo(RequestEntity requestEntity) {
+    RequestPojo requestPojo = new RequestPojo();
+    BeanUtils.copyProperties(requestEntity, requestPojo);
+
+    // Convert and set UserInfoPojo for client
+    if (requestEntity.getClientEntity() != null) {
+        UserInfoPojo clientPojo = new UserInfoPojo();
+        BeanUtils.copyProperties(requestEntity.getClientEntity(), clientPojo);
+        requestPojo.setClientPojo(clientPojo);
+    }
+
+    // Convert and set ServiceProviderPojo
+    if (requestEntity.getServiceProviderEntity() != null) {
+        ServiceProviderPojo spPojo = new ServiceProviderPojo();
+        BeanUtils.copyProperties(requestEntity.getServiceProviderEntity(), spPojo);
+        
+        // Nested POJOs within ServiceProviderPojo
+        if (requestEntity.getServiceProviderEntity().getCategoryEntity() != null) {
+            CategoryPojo categoryPojo = new CategoryPojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getCategoryEntity(), categoryPojo);
+            spPojo.setCategoryPojo(categoryPojo);
+        }
+        
+        if (requestEntity.getServiceProviderEntity().getAddressEntity() != null) {
+            AddressPojo addressPojo = new AddressPojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getAddressEntity(), addressPojo);
+            spPojo.setAddressPojo(addressPojo);
+        }
+        
+        if (requestEntity.getServiceProviderEntity().getQualificationEntity() != null) {
+            QualificationPojo qualificationPojo = new QualificationPojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getQualificationEntity(), qualificationPojo);
+            spPojo.setQualificationPojo(qualificationPojo);
+        }
+        
+        if (requestEntity.getServiceProviderEntity().getAdminEntity() != null) {
+            UserInfoPojo adminPojo = new UserInfoPojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getAdminEntity(), adminPojo);
+            spPojo.setAdminPojo(adminPojo);
+        }
+        
+        if (requestEntity.getServiceProviderEntity().getStatusEntity() != null) {
+            StatusPojo statusPojo = new StatusPojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getStatusEntity(), statusPojo);
+            spPojo.setStatusPojo(statusPojo);
+        }
+        
+        if (requestEntity.getServiceProviderEntity().getNurseLicenseEntity() != null) {
+            NurseLicensePojo nurseLicensePojo = new NurseLicensePojo();
+            BeanUtils.copyProperties(requestEntity.getServiceProviderEntity().getNurseLicenseEntity(), nurseLicensePojo);
+            spPojo.setNurseLicensePojo(nurseLicensePojo);
+        }
+
+        requestPojo.setServiceProviderPojo(spPojo);
+    }
+
+    // Convert and set AddressPojo
+    if (requestEntity.getAddressEntity() != null) {
+        AddressPojo addressPojo = new AddressPojo();
+        BeanUtils.copyProperties(requestEntity.getAddressEntity(), addressPojo);
+        requestPojo.setAddressPojo(addressPojo);
+    }
+
+    // Convert and set MemberPojo
+    if (requestEntity.getMemberEntity() != null) {
+        MemberPojo memberPojo = new MemberPojo();
+        BeanUtils.copyProperties(requestEntity.getMemberEntity(), memberPojo);
+        requestPojo.setMemberPojo(memberPojo);
+    }
+
+    // Convert and set StatusPojo
+    if (requestEntity.getStatusEntity() != null) {
+        StatusPojo statusPojo = new StatusPojo();
+        BeanUtils.copyProperties(requestEntity.getStatusEntity(), statusPojo);
+        requestPojo.setStatusPojo(statusPojo);
+    }
+
+    return requestPojo;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+private RequestEntity convertPojoToEntity(RequestPojo requestPojo) {
+    RequestEntity requestEntity = new RequestEntity();
+    BeanUtils.copyProperties(requestPojo, requestEntity);
+
+    // Convert and set UserInfoEntity for client
+    if (requestPojo.getClientPojo() != null) {
+        UserInfoEntity clientEntity = new UserInfoEntity();
+        BeanUtils.copyProperties(requestPojo.getClientPojo(), clientEntity);
+        requestEntity.setClientEntity(clientEntity);
+    }
+
+    // Convert and set ServiceProviderEntity
+    if (requestPojo.getServiceProviderPojo() != null) {
+        ServiceProviderEntity spEntity = new ServiceProviderEntity();
+        BeanUtils.copyProperties(requestPojo.getServiceProviderPojo(), spEntity);
+
+        // Nested Entities within ServiceProviderEntity
+        if (requestPojo.getServiceProviderPojo().getCategoryPojo() != null) {
+            CategoryEntity categoryEntity = new CategoryEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getCategoryPojo(), categoryEntity);
+            spEntity.setCategoryEntity(categoryEntity);
+        }
+
+        if (requestPojo.getServiceProviderPojo().getAddressPojo() != null) {
+            AddressEntity addressEntity = new AddressEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getAddressPojo(), addressEntity);
+            spEntity.setAddressEntity(addressEntity);
+        }
+
+        if (requestPojo.getServiceProviderPojo().getQualificationPojo() != null) {
+            QualificationEntity qualificationEntity = new QualificationEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getQualificationPojo(), qualificationEntity);
+            spEntity.setQualificationEntity(qualificationEntity);
+        }
+
+        if (requestPojo.getServiceProviderPojo().getAdminPojo() != null) {
+            UserInfoEntity adminEntity = new UserInfoEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getAdminPojo(), adminEntity);
+            spEntity.setAdminEntity(adminEntity);
+        }
+
+        if (requestPojo.getServiceProviderPojo().getStatusPojo() != null) {
+            StatusEntity statusEntity = new StatusEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getStatusPojo(), statusEntity);
+            spEntity.setStatusEntity(statusEntity);
+        }
+
+        if (requestPojo.getServiceProviderPojo().getNurseLicensePojo() != null) {
+            NurseLicenseEntity nurseLicenseEntity = new NurseLicenseEntity();
+            BeanUtils.copyProperties(requestPojo.getServiceProviderPojo().getNurseLicensePojo(), nurseLicenseEntity);
+            spEntity.setNurseLicenseEntity(nurseLicenseEntity);
+        }
+
+        requestEntity.setServiceProviderEntity(spEntity);
+    }
+
+    // Convert and set AddressEntity
+    if (requestPojo.getAddressPojo() != null) {
+        AddressEntity addressEntity = new AddressEntity();
+        BeanUtils.copyProperties(requestPojo.getAddressPojo(), addressEntity);
+        requestEntity.setAddressEntity(addressEntity);
+    }
+
+    // Convert and set MemberEntity
+    if (requestPojo.getMemberPojo() != null) {
+        MemberEntity memberEntity = new MemberEntity();
+        BeanUtils.copyProperties(requestPojo.getMemberPojo(), memberEntity);
+        requestEntity.setMemberEntity(memberEntity);
+    }
+
+    // Convert and set StatusEntity
+    if (requestPojo.getStatusPojo() != null) {
+        StatusEntity statusEntity = new StatusEntity();
+        BeanUtils.copyProperties(requestPojo.getStatusPojo(), statusEntity);
+        requestEntity.setStatusEntity(statusEntity);
+    }
+
+    return requestEntity;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 public interface ServiceProviderService {
+    List<ServiceProviderPojo> getAllServiceProviders();
 
     ServiceProviderPojo addServiceProvider(ServiceProviderPojo serviceProviderPojo);
     ServiceProviderPojo updateServiceProvider(ServiceProviderPojo serviceProviderPojo);
@@ -13,7 +217,6 @@ public interface ServiceProviderService {
     List<ServiceProviderPojo> getServiceProvidersByStatus(int statusId);
     List<ServiceProviderPojo> getServiceProvidersByAdminAndStatus(int adminId, int statusId);
     void updateServiceProviderStatus(int spId, int statusId);
-    List<ServiceProviderPojo> getAllServiceProviders();
     List<ServiceProviderPojo> getServiceProvidersByAddressId(int addressId);
 
 }
