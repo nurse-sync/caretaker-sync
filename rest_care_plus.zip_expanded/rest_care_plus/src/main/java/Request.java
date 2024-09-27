@@ -5,6 +5,125 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+public class QualificationServiceImpl implements QualificationService {
+
+    @Autowired
+    private QualificationRepository qualificationRepository; // Assuming you have a repository for QualificationEntity
+
+    @Override
+    public List<QualificationPojo> fetchAllQualifications() {
+        List<QualificationEntity> qualificationEntities = qualificationRepository.findAll();
+        return qualificationEntities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public QualificationPojo fetchAQualification(int qualificationId) {
+        Optional<QualificationEntity> qualificationEntity = qualificationRepository.findById(qualificationId);
+        return qualificationEntity.map(this::convertEntityToPojo).orElse(null);
+    }
+
+    @Override
+    public QualificationPojo fetchQualificationBySpId(int spId) {
+        QualificationEntity qualificationEntity = qualificationRepository.findBySpId(spId);
+        return convertEntityToPojo(qualificationEntity);
+    }
+
+    // Utility method to convert entity to POJO
+    private QualificationPojo convertEntityToPojo(QualificationEntity qualificationEntity) {
+        QualificationPojo qualificationPojo = new QualificationPojo();
+        qualificationPojo.setSpQualificationId(qualificationEntity.getSpQualificationId());
+        qualificationPojo.setSpId(qualificationEntity.getSpId());
+        qualificationPojo.setExperienceYears(qualificationEntity.getExperienceYears());
+        qualificationPojo.setRoleName(qualificationEntity.getRoleName());
+        return qualificationPojo;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/qualifications")
+public class QualificationController {
+
+    @Autowired
+    private QualificationService qualificationService;
+
+    // Fetch all qualifications
+    @GetMapping
+    public ResponseEntity<List<QualificationPojo>> fetchAllQualifications() {
+        List<QualificationPojo> qualifications = qualificationService.fetchAllQualifications();
+        return new ResponseEntity<>(qualifications, HttpStatus.OK);
+    }
+
+    // Fetch qualification by ID
+    @GetMapping("/{qualificationId}")
+    public ResponseEntity<QualificationPojo> fetchAQualification(@PathVariable int qualificationId) {
+        QualificationPojo qualification = qualificationService.fetchAQualification(qualificationId);
+        return new ResponseEntity<>(qualification, HttpStatus.OK);
+    }
+
+    // Fetch qualification by Service Provider ID (spId)
+    @GetMapping("/sp/{spId}")
+    public ResponseEntity<QualificationPojo> fetchQualificationBySpId(@PathVariable int spId) {
+        QualificationPojo qualification = qualificationService.fetchQualificationBySpId(spId);
+        return new ResponseEntity<>(qualification, HttpStatus.OK);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
 public class NurseLicenseServiceImpl implements NurseLicenseService {
 
     @Autowired
