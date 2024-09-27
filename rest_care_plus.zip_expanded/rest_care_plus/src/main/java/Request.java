@@ -1,4 +1,132 @@
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class NurseLicenseServiceImpl implements NurseLicenseService {
+
+    @Autowired
+    private NurseLicenseRepository nurseLicenseRepository; // Assuming you have a repository for NurseLicenseEntity
+
+    @Override
+    public List<NurseLicensePojo> fetchAllNurseLicense() {
+        List<NurseLicenseEntity> licenseEntities = nurseLicenseRepository.findAll();
+        return licenseEntities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public NurseLicensePojo fetchNurseLicenseById(int nurseLicenseId) {
+        Optional<NurseLicenseEntity> licenseEntity = nurseLicenseRepository.findById(nurseLicenseId);
+        return licenseEntity.map(this::convertEntityToPojo).orElse(null);
+    }
+
+    @Override
+    public NurseLicensePojo fetchNurseLicenseBySpId(int spId) {
+        NurseLicenseEntity licenseEntity = nurseLicenseRepository.findBySpId(spId);
+        return convertEntityToPojo(licenseEntity);
+    }
+
+    @Override
+    public NurseLicensePojo updateNurseLicenseUrl(NurseLicensePojo editLicensePojo) {
+        Optional<NurseLicenseEntity> existingEntity = nurseLicenseRepository.findById(editLicensePojo.getNurseLicenseId());
+        if (existingEntity.isPresent()) {
+            NurseLicenseEntity licenseEntity = existingEntity.get();
+            licenseEntity.setNurseLicenseUrl(editLicensePojo.getNurseLicenseUrl()); // Updating license URL
+            NurseLicenseEntity updatedEntity = nurseLicenseRepository.save(licenseEntity); // Save updated entity
+            return convertEntityToPojo(updatedEntity); // Return updated POJO
+        }
+        return null;
+    }
+
+    // Utility method to convert entity to POJO
+    private NurseLicensePojo convertEntityToPojo(NurseLicenseEntity licenseEntity) {
+        NurseLicensePojo licensePojo = new NurseLicensePojo();
+        licensePojo.setNurseLicenseId(licenseEntity.getNurseLicenseId());
+        licensePojo.setSpId(licenseEntity.getSpId());
+        licensePojo.setNurseLicenseUrl(licenseEntity.getNurseLicenseUrl());
+        return licensePojo;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/nurse-licenses")
+public class NurseLicenseController {
+
+    @Autowired
+    private NurseLicenseService nurseLicenseService;
+
+    // Fetch all nurse licenses
+    @GetMapping
+    public ResponseEntity<List<NurseLicensePojo>> fetchAllNurseLicenses() {
+        List<NurseLicensePojo> nurseLicenses = nurseLicenseService.fetchAllNurseLicense();
+        return new ResponseEntity<>(nurseLicenses, HttpStatus.OK);
+    }
+
+    // Fetch nurse license by ID
+    @GetMapping("/{nurseLicenseId}")
+    public ResponseEntity<NurseLicensePojo> fetchNurseLicenseById(@PathVariable int nurseLicenseId) {
+        NurseLicensePojo nurseLicense = nurseLicenseService.fetchNurseLicenseById(nurseLicenseId);
+        return new ResponseEntity<>(nurseLicense, HttpStatus.OK);
+    }
+
+    // Fetch nurse license by Service Provider (spId)
+    @GetMapping("/sp/{spId}")
+    public ResponseEntity<NurseLicensePojo> fetchNurseLicenseBySpId(@PathVariable int spId) {
+        NurseLicensePojo nurseLicense = nurseLicenseService.fetchNurseLicenseBySpId(spId);
+        return new ResponseEntity<>(nurseLicense, HttpStatus.OK);
+    }
+
+    // Update nurse license URL
+    @PutMapping("/{nurseLicenseId}/update-url")
+    public ResponseEntity<NurseLicensePojo> updateNurseLicenseUrl(@PathVariable int nurseLicenseId, @RequestBody NurseLicensePojo editLicensePojo) {
+        editLicensePojo.setNurseLicenseId(nurseLicenseId); // Ensure the correct ID is being updated
+        NurseLicensePojo updatedLicense = nurseLicenseService.updateNurseLicenseUrl(editLicensePojo);
+        return updatedLicense != null ? new ResponseEntity<>(updatedLicense, HttpStatus.OK)
+                                      : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
