@@ -1,4 +1,110 @@
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/service-providers")
+public class ServiceProviderController {
+
+    @Autowired
+    private ServiceProviderService serviceProviderService;
+
+    // Get all service providers
+    @GetMapping
+    public ResponseEntity<List<ServiceProviderPojo>> getAllServiceProviders() {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getAllServiceProviders();
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+
+    // Get service provider by ID
+    @GetMapping("/{spId}")
+    public ResponseEntity<ServiceProviderPojo> getServiceProviderById(@PathVariable int spId) {
+        ServiceProviderPojo serviceProvider = serviceProviderService.getServiceProviderById(spId);
+        return new ResponseEntity<>(serviceProvider, HttpStatus.OK);
+    }
+
+    // Add a new service provider
+    @PostMapping
+    public ResponseEntity<ServiceProviderPojo> addServiceProvider(@RequestBody ServiceProviderPojo serviceProviderPojo) {
+        ServiceProviderPojo createdServiceProvider = serviceProviderService.addServiceProvider(serviceProviderPojo);
+        return new ResponseEntity<>(createdServiceProvider, HttpStatus.CREATED);
+    }
+
+    // Update an existing service provider
+    @PutMapping("/{spId}")
+    public ResponseEntity<ServiceProviderPojo> updateServiceProvider(@PathVariable int spId, @RequestBody ServiceProviderPojo serviceProviderPojo) {
+        serviceProviderPojo.setSpID(spId);  // Make sure the correct ID is set
+        ServiceProviderPojo updatedServiceProvider = serviceProviderService.updateServiceProvider(serviceProviderPojo);
+        return new ResponseEntity<>(updatedServiceProvider, HttpStatus.OK);
+    }
+
+    // Get service providers by category ID
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ServiceProviderPojo>> getServiceProvidersByCategory(@PathVariable int categoryId) {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getServiceProvidersByCategory(categoryId);
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+
+    // Get service providers by admin ID
+    @GetMapping("/admin/{adminId}")
+    public ResponseEntity<List<ServiceProviderPojo>> getServiceProvidersByAdmin(@PathVariable int adminId) {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getServiceProvidersByAdmin(adminId);
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+
+    // Get service providers by status ID
+    @GetMapping("/status/{statusId}")
+    public ResponseEntity<List<ServiceProviderPojo>> getServiceProvidersByStatus(@PathVariable int statusId) {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getServiceProvidersByStatus(statusId);
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+
+    // Get service providers by admin ID and status ID
+    @GetMapping("/admin/{adminId}/status/{statusId}")
+    public ResponseEntity<List<ServiceProviderPojo>> getServiceProvidersByAdminAndStatus(@PathVariable int adminId, @PathVariable int statusId) {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getServiceProvidersByAdminAndStatus(adminId, statusId);
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+
+    // Update service provider status
+    @PutMapping("/{spId}/status/{statusId}")
+    public ResponseEntity<ServiceProviderPojo> updateServiceProviderStatus(@PathVariable int spId, @PathVariable int statusId) {
+        ServiceProviderPojo updatedServiceProvider = serviceProviderService.updateServiceProviderStatus(spId, statusId);
+        return new ResponseEntity<>(updatedServiceProvider, HttpStatus.OK);
+    }
+
+    // Get service providers by address ID
+    @GetMapping("/address/{addressId}")
+    public ResponseEntity<List<ServiceProviderPojo>> getServiceProvidersByAddressId(@PathVariable int addressId) {
+        List<ServiceProviderPojo> serviceProviders = serviceProviderService.getserviceProvidersByAddressid(addressId);
+        return new ResponseEntity<>(serviceProviders, HttpStatus.OK);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
