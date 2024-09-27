@@ -1,3 +1,101 @@
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class StatusServiceImpl implements StatusService {
+
+    @Autowired
+    private StatusDao statusDao; // Status repository
+
+    @Override
+    public List<StatusPojo> fetchAllStatuses() {
+        List<StatusEntity> statusEntities = statusDao.findAll();
+        return statusEntities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StatusPojo fetchAStatus(int statusId) {
+        Optional<StatusEntity> statusEntity = statusDao.findById(statusId);
+        return statusEntity.map(this::convertEntityToPojo).orElse(null);
+    }
+
+    @Override
+    public StatusPojo fetchAStatusByName(String statusName) {
+        StatusEntity statusEntity = statusDao.findByStatusName(statusName);
+        return convertEntityToPojo(statusEntity);
+    }
+
+    // Utility method to convert entity to POJO
+    private StatusPojo convertEntityToPojo(StatusEntity statusEntity) {
+        if (statusEntity == null) {
+            return null;
+        }
+        StatusPojo statusPojo = new StatusPojo();
+        statusPojo.setStatusId(statusEntity.getStatusId());
+        statusPojo.setStatusName(statusEntity.getStatusName());
+        return statusPojo;
+    }
+}
+
+
+
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/statuses")
+public class StatusController {
+
+    @Autowired
+    private StatusService statusService;
+
+    // Fetch all statuses
+    @GetMapping
+    public ResponseEntity<List<StatusPojo>> fetchAllStatuses() {
+        List<StatusPojo> statuses = statusService.fetchAllStatuses();
+        return new ResponseEntity<>(statuses, HttpStatus.OK);
+    }
+
+    // Fetch status by ID
+    @GetMapping("/{statusId}")
+    public ResponseEntity<StatusPojo> fetchAStatus(@PathVariable int statusId) {
+        StatusPojo status = statusService.fetchAStatus(statusId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
+    // Fetch status by name
+    @GetMapping("/name/{statusName}")
+    public ResponseEntity<StatusPojo> fetchAStatusByName(@PathVariable String statusName) {
+        StatusPojo status = statusService.fetchAStatusByName(statusName);
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
