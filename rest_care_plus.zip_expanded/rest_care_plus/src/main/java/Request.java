@@ -1,3 +1,222 @@
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+public class ServiceProviderServiceImpl implements ServiceProviderService {
+
+    @Autowired
+    private ServiceProviderDao serviceProviderDao;  // Assuming you have a DAO or repository for ServiceProvider
+
+    @Override
+    public List<ServiceProviderPojo> getAllServiceProviders() {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findAll();
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ServiceProviderPojo addServiceProvider(ServiceProviderPojo serviceProviderPojo) {
+        ServiceProviderEntity entity = convertPojoToEntity(serviceProviderPojo);
+        ServiceProviderEntity savedEntity = serviceProviderDao.save(entity);
+        return convertEntityToPojo(savedEntity);
+    }
+
+    @Override
+    public ServiceProviderPojo updateServiceProvider(ServiceProviderPojo serviceProviderPojo) {
+        ServiceProviderEntity entity = convertPojoToEntity(serviceProviderPojo);
+        ServiceProviderEntity updatedEntity = serviceProviderDao.save(entity);
+        return convertEntityToPojo(updatedEntity);
+    }
+
+    @Override
+    public ServiceProviderPojo getServiceProviderById(int spId) {
+        ServiceProviderEntity entity = serviceProviderDao.findById(spId).orElseThrow(() -> new RuntimeException("Service Provider not found"));
+        return convertEntityToPojo(entity);
+    }
+
+    @Override
+    public List<ServiceProviderPojo> getServiceProvidersByCategory(int categoryId) {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findByCategoryEntity_CategoryId(categoryId);
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ServiceProviderPojo> getServiceProvidersByAdmin(int adminId) {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findByAdminEntity_UserId(adminId);
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ServiceProviderPojo> getServiceProvidersByStatus(int statusId) {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findByStatusEntity_StatusId(statusId);
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ServiceProviderPojo> getServiceProvidersByAdminAndStatus(int adminId, int statusId) {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findByAdminEntity_UserIdAndStatusEntity_StatusId(adminId, statusId);
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ServiceProviderPojo updateServiceProviderStatus(int spId, int statusId) {
+        ServiceProviderEntity entity = serviceProviderDao.findById(spId)
+                .orElseThrow(() -> new RuntimeException("Service Provider not found"));
+        StatusEntity statusEntity = new StatusEntity(); // Assuming you have logic to fetch the status entity
+        statusEntity.setStatusId(statusId);
+        entity.setStatusEntity(statusEntity);
+        ServiceProviderEntity updatedEntity = serviceProviderDao.save(entity);
+        return convertEntityToPojo(updatedEntity);
+    }
+
+    @Override
+    public List<ServiceProviderPojo> getServiceProvidersByAddressId(int addressId) {
+        List<ServiceProviderEntity> entities = serviceProviderDao.findByAddressEntity_AddressId(addressId);
+        return entities.stream()
+                .map(this::convertEntityToPojo)
+                .collect(Collectors.toList());
+    }
+
+    // Helper methods to convert between Pojo and Entity
+
+    private ServiceProviderPojo convertEntityToPojo(ServiceProviderEntity entity) {
+        ServiceProviderPojo pojo = new ServiceProviderPojo();
+        BeanUtils.copyProperties(entity, pojo);
+
+        // Handle nested POJOs
+        if (entity.getCategoryEntity() != null) {
+            CategoryPojo categoryPojo = new CategoryPojo();
+            BeanUtils.copyProperties(entity.getCategoryEntity(), categoryPojo);
+            pojo.setCategoryPojo(categoryPojo);
+        }
+
+        if (entity.getAddressEntity() != null) {
+            AddressPojo addressPojo = new AddressPojo();
+            BeanUtils.copyProperties(entity.getAddressEntity(), addressPojo);
+            pojo.setAddressPojo(addressPojo);
+        }
+
+        if (entity.getQualificationEntity() != null) {
+            QualificationPojo qualificationPojo = new QualificationPojo();
+            BeanUtils.copyProperties(entity.getQualificationEntity(), qualificationPojo);
+            pojo.setQualificationPojo(qualificationPojo);
+        }
+
+        if (entity.getAdminEntity() != null) {
+            UserInfoPojo adminPojo = new UserInfoPojo();
+            BeanUtils.copyProperties(entity.getAdminEntity(), adminPojo);
+            pojo.setAdminPojo(adminPojo);
+        }
+
+        if (entity.getStatusEntity() != null) {
+            StatusPojo statusPojo = new StatusPojo();
+            BeanUtils.copyProperties(entity.getStatusEntity(), statusPojo);
+            pojo.setStatusPojo(statusPojo);
+        }
+
+        if (entity.getNurseLicenseEntity() != null) {
+            NurseLicensePojo nurseLicensePojo = new NurseLicensePojo();
+            BeanUtils.copyProperties(entity.getNurseLicenseEntity(), nurseLicensePojo);
+            pojo.setNurseLicensePojo(nurseLicensePojo);
+        }
+
+        return pojo;
+    }
+
+    private ServiceProviderEntity convertPojoToEntity(ServiceProviderPojo pojo) {
+        ServiceProviderEntity entity = new ServiceProviderEntity();
+        BeanUtils.copyProperties(pojo, entity);
+
+        // Handle nested entities
+        if (pojo.getCategoryPojo() != null) {
+            CategoryEntity categoryEntity = new CategoryEntity();
+            BeanUtils.copyProperties(pojo.getCategoryPojo(), categoryEntity);
+            entity.setCategoryEntity(categoryEntity);
+        }
+
+        if (pojo.getAddressPojo() != null) {
+            AddressEntity addressEntity = new AddressEntity();
+            BeanUtils.copyProperties(pojo.getAddressPojo(), addressEntity);
+            entity.setAddressEntity(addressEntity);
+        }
+
+        if (pojo.getQualificationPojo() != null) {
+            QualificationEntity qualificationEntity = new QualificationEntity();
+            BeanUtils.copyProperties(pojo.getQualificationPojo(), qualificationEntity);
+            entity.setQualificationEntity(qualificationEntity);
+        }
+
+        if (pojo.getAdminPojo() != null) {
+            UserInfoEntity adminEntity = new UserInfoEntity();
+            BeanUtils.copyProperties(pojo.getAdminPojo(), adminEntity);
+            entity.setAdminEntity(adminEntity);
+        }
+
+        if (pojo.getStatusPojo() != null) {
+            StatusEntity statusEntity = new StatusEntity();
+            BeanUtils.copyProperties(pojo.getStatusPojo(), statusEntity);
+            entity.setStatusEntity(statusEntity);
+        }
+
+        if (pojo.getNurseLicensePojo() != null) {
+            NurseLicenseEntity nurseLicenseEntity = new NurseLicenseEntity();
+            BeanUtils.copyProperties(pojo.getNurseLicensePojo(), nurseLicenseEntity);
+            entity.setNurseLicenseEntity(nurseLicenseEntity);
+        }
+
+        return entity;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 private RequestPojo convertEntityToPojo(RequestEntity requestEntity) {
     RequestPojo requestPojo = new RequestPojo();
     BeanUtils.copyProperties(requestEntity, requestPojo);
